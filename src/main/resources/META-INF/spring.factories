@@ -1,0 +1,3 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+com.gitthub.wujun728.engine.core.ApiConfiguration,\
+com.gitthub.wujun728.engine.core.ApiGroovyScriptConfiguration
