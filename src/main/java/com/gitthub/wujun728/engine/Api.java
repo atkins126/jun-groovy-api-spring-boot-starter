@@ -1,4 +1,4 @@
-package com.gitthub.wujun728.engine.core;
+package com.gitthub.wujun728.engine;
 
 import java.io.File;
 import java.nio.charset.StandardCharsets;
@@ -10,12 +10,12 @@ import org.springframework.util.ResourceUtils;
 
 import com.github.freakchick.orange.SqlMeta;
 import com.github.freakchick.orange.engine.DynamicSqlEngine;
-import com.gitthub.wujun728.engine.core.config.ApiPorperties;
-import com.gitthub.wujun728.engine.core.entity.DataResult;
-import com.gitthub.wujun728.engine.core.entity.DataSource;
-import com.gitthub.wujun728.engine.core.entity.Sql;
-import com.gitthub.wujun728.engine.core.util.JdbcUtil;
-import com.gitthub.wujun728.engine.core.util.XmlParser;
+import com.gitthub.wujun728.engine.config.ApiPorperties;
+import com.gitthub.wujun728.engine.entity.DataResult;
+import com.gitthub.wujun728.engine.entity.DataSource;
+import com.gitthub.wujun728.engine.entity.Sql;
+import com.gitthub.wujun728.engine.util.JdbcUtil;
+import com.gitthub.wujun728.engine.util.XmlParser;
 import com.google.common.collect.Maps;
 
 import lombok.extern.slf4j.Slf4j;

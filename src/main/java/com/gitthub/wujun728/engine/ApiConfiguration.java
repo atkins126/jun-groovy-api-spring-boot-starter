@@ -1,4 +1,4 @@
-package com.gitthub.wujun728.engine.core;
+package com.gitthub.wujun728.engine;
 
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -6,7 +6,7 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import com.gitthub.wujun728.engine.core.config.ApiPorperties;
+import com.gitthub.wujun728.engine.config.ApiPorperties;
 
 @Configuration
 @ConditionalOnProperty(prefix = "spring.groovy-api", name = "enabled", havingValue = "true", matchIfMissing = true)

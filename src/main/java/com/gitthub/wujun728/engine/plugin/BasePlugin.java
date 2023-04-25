@@ -1,4 +1,4 @@
-package com.gitthub.wujun728.engine.core.plugin;
+package com.gitthub.wujun728.engine.plugin;
 
 public interface BasePlugin {
 

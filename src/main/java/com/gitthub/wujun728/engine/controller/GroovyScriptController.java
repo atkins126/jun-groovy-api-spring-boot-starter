@@ -1,4 +1,4 @@
-package com.gitthub.wujun728.engine.core.controller;
+package com.gitthub.wujun728.engine.controller;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;

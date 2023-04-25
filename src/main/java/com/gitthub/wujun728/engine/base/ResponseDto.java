@@ -1,4 +1,4 @@
-package com.gitthub.wujun728.engine.core.base;
+package com.gitthub.wujun728.engine.base;
 
 import com.alibaba.fastjson.annotation.JSONField;
 import com.alibaba.fastjson.serializer.SerializerFeature;

@@ -1,9 +1,9 @@
-package com.gitthub.wujun728.engine.core.plugin.impl;
+package com.gitthub.wujun728.engine.plugin.impl;
 
 import java.util.Map;
 
-import com.gitthub.wujun728.engine.core.entity.ApiConfig;
-import com.gitthub.wujun728.engine.core.plugin.CachePlugin;
+import com.gitthub.wujun728.engine.entity.ApiConfig;
+import com.gitthub.wujun728.engine.plugin.CachePlugin;
 
 public class DemoCachePlugin extends CachePlugin {
     @Override

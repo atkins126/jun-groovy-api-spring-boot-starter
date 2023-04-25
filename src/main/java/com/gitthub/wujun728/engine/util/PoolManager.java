@@ -1,4 +1,4 @@
-package com.gitthub.wujun728.engine.core.util;
+package com.gitthub.wujun728.engine.util;
 
 import java.sql.SQLException;
 import java.util.concurrent.ConcurrentHashMap;
@@ -7,7 +7,7 @@ import java.util.concurrent.locks.ReentrantLock;
 
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.pool.DruidPooledConnection;
-import com.gitthub.wujun728.engine.core.entity.DataSource;
+import com.gitthub.wujun728.engine.entity.DataSource;
 
 import lombok.extern.slf4j.Slf4j;
 

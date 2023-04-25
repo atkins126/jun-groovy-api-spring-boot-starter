@@ -1,4 +1,4 @@
-package com.gitthub.wujun728.engine.core.entity;
+package com.gitthub.wujun728.engine.entity;
 
 import lombok.Data;
 

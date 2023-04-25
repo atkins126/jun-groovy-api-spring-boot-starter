@@ -1,12 +1,12 @@
-package com.gitthub.wujun728.engine.core.util;
+package com.gitthub.wujun728.engine.util;
 
 import com.alibaba.druid.pool.DruidPooledConnection;
 import com.alibaba.druid.util.JdbcConstants;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.github.freakchick.orange.engine.DynamicSqlEngine;
-import com.gitthub.wujun728.engine.core.entity.DataResult;
-import com.gitthub.wujun728.engine.core.entity.DataSource;
+import com.gitthub.wujun728.engine.entity.DataResult;
+import com.gitthub.wujun728.engine.entity.DataSource;
 
 import lombok.extern.slf4j.Slf4j;
 

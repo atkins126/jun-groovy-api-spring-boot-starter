@@ -1,4 +1,4 @@
-package com.gitthub.wujun728.engine.core.plugin;
+package com.gitthub.wujun728.engine.plugin;
 
 import com.alibaba.fastjson.JSONObject;
 import lombok.extern.slf4j.Slf4j;

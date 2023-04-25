@@ -1,11 +1,11 @@
-package com.gitthub.wujun728.engine.core.plugin;
+package com.gitthub.wujun728.engine.plugin;
 
 import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.gitthub.wujun728.engine.core.entity.ApiConfig;
+import com.gitthub.wujun728.engine.entity.ApiConfig;
 
 public abstract class CachePlugin implements BasePlugin {
 

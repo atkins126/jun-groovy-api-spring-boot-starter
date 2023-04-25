@@ -1,12 +1,12 @@
 
-package com.gitthub.wujun728.engine.core;
+package com.gitthub.wujun728.engine;
 
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 
-import com.gitthub.wujun728.engine.core.controller.GroovyScriptController;
+import com.gitthub.wujun728.engine.controller.GroovyScriptController;
 
 import javax.script.ScriptEngineManager;
 
