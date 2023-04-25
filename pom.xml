@@ -7,8 +7,9 @@
 
     <groupId>io.github.wujun728</groupId>
     <artifactId>jun-groovy-api-spring-boot-starter</artifactId>
-    <version>1.0</version>
+    <version>0.0.1.Alpha</version>
     <name>groovy_api_starter</name>
+    <url>https://github.com/wujun728/jun-groovy-api-spring-boot-starter</url>
     <description>动态生成API并动态发布，并动态执行groovy脚本及SQL脚本的Stater,提供在线执行动态程序脚热加载本及动态生成API并执行</description>
     <packaging>jar</packaging>
 	
@@ -125,7 +126,7 @@
 		    </dependency>
     	</dependencies>
 
-    <distributionManagement>
+<!--     <distributionManagement>
         <snapshotRepository>
             <id>ossrh</id>
             <url>https://s01.oss.sonatype.org/content/repositories/snapshots</url>
@@ -134,7 +135,47 @@
             <id>ossrh</id>
             <url>https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/</url>
         </repository>
+    </distributionManagement> -->
+    
+    <!--   指定打包上传的目标url         -->
+    <distributionManagement>
+        <snapshotRepository>
+            <!--   这个id需要和settings.xml里面的id一致         -->
+            <id>oss</id>
+            <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+        </snapshotRepository>
+        <repository>
+          <!--   这个id需要和settings.xml里面的id一致         -->
+            <id>oss</id>
+            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+        </repository>
     </distributionManagement>
+    
+    <!--   license信息         -->
+    <licenses>
+        <license>
+            <name>The Apache License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+        </license>
+    </licenses>
+<!--   开发人员信息         -->
+    <developers>
+        <developer>
+            <name>wujun</name>
+            <email>wujun728@163.com</email>
+            <roles>
+                <role>developer</role>
+            </roles>
+            <timezone>+8</timezone>
+        </developer>
+    </developers>
+<!--   项目仓库信息         -->
+    <scm>
+        <connection>scm:git:https://github.com/wujun728/jun-groovy-api-spring-boot-starter.git</connection>
+       <developerConnection>scm:git:https://github.com/wujun728/jun-groovy-api-spring-boot-starter.git</developerConnection>
+        <url>https://github.com/wujun728/jun-groovy-api-spring-boot-starter</url>
+        <tag>v${project.version}</tag>
+    </scm>
 
     <build>
         <plugins>
@@ -185,7 +226,27 @@
                     </execution>
                 </executions>
             </plugin>
-
+			<!-- GPG -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-gpg-plugin</artifactId>
+                <version>1.6</version>
+                <configuration>
+                    <gpgArguments>
+                        <arg>--pinentry-mode</arg>
+                        <arg>loopback</arg>
+                    </gpgArguments>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>sign-artifacts</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>sign</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
 
             <!-- <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
