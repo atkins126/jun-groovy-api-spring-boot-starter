@@ -3,21 +3,20 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-	 
 
     <groupId>io.github.wujun728</groupId>
     <artifactId>jun-groovy-api-spring-boot-starter</artifactId>
-    <version>0.0.1.Alpha</version>
+    <version>0.0.1</version>
     <name>groovy_api_starter</name>
+    <description>groovy_api_starter</description>
     <url>https://github.com/wujun728/jun-groovy-api-spring-boot-starter</url>
-    <description>动态生成API并动态发布，并动态执行groovy脚本及SQL脚本的Stater,提供在线执行动态程序脚热加载本及动态生成API并执行</description>
-    <packaging>jar</packaging>
-	
+    
+
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
         <version>2.2.2.RELEASE</version>
-        <relativePath/> <!-- lookup parent from repository -->
+        <relativePath/>
     </parent>
 
     <properties>
@@ -123,11 +122,34 @@
 		<dependency>
 		    <groupId>org.codehaus.groovy</groupId>
 		    <artifactId>groovy</artifactId>
-		    </dependency>
-    	</dependencies>
+	    </dependency>
 
-	<!-- 下面那个用不了，用这个 -->    
-	<distributionManagement>
+    </dependencies>
+    
+    
+    <developers>
+        <developer>
+            <name>wujun728</name>
+            <email>wujun728@163.com</email>
+            <url>https://github.com/wujun728/jun-groovy-api-spring-boot-starter</url>
+        </developer>
+    </developers>
+
+    <scm>
+        <url>https://github.com/wujun728/jun-groovy-api-spring-boot-starter.git</url>
+        <connection>scm:git:https://github.com/wujun728/jun-groovy-api-spring-boot-starter.git</connection>
+        <developerConnection>scm:git:https://github.com/wujun728/jun-groovy-api-spring-boot-starter.git</developerConnection>
+    </scm>
+
+    <licenses>
+        <license>
+            <name>The Apache Software License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
+    <distributionManagement>
         <snapshotRepository>
             <id>oss</id>
             <url>https://s01.oss.sonatype.org/content/repositories/snapshots</url>
@@ -137,131 +159,84 @@
             <url>https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/</url>
         </repository>
     </distributionManagement>
-    
-    <!--   指定打包上传的目标url , 这个id oss 需要和settings.xml里面的id一致         -->
-    <!--
-    <distributionManagement>
-        <snapshotRepository>
-            <id>oss</id>
-            <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
-        </snapshotRepository>
-        <repository>
-            <id>oss</id>
-            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
-        </repository>
-    </distributionManagement>
-    -->
-    <!--   license信息         -->
-    <licenses>
-        <license>
-            <name>The Apache License, Version 2.0</name>
-            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
-        </license>
-    </licenses>
-<!--   开发人员信息         -->
-    <developers>
-        <developer>
-            <name>wujun</name>
-            <email>wujun728@163.com</email>
-            <roles>
-                <role>developer</role>
-            </roles>
-            <timezone>+8</timezone>
-        </developer>
-    </developers>
-<!--   项目仓库信息         -->
-    <scm>
-        <connection>scm:git:https://github.com/wujun728/jun-groovy-api-spring-boot-starter.git</connection>
-       <developerConnection>scm:git:https://github.com/wujun728/jun-groovy-api-spring-boot-starter.git</developerConnection>
-        <url>https://github.com/wujun728/jun-groovy-api-spring-boot-starter</url>
-        <tag>v${project.version}</tag>
-    </scm>
 
+    <profiles>
+  <profile>
+    <id>release</id>
     <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <configuration>
-                    <source>1.8</source>
-                    <target>1.8</target>
-                    <encoding>UTF-8</encoding>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-source-plugin</artifactId>
-                <version>2.2.1</version>
-                <executions>
-                    <execution>
-                        <id>attach-sources</id>
-                        <goals>
-                            <goal>jar-no-fork</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-javadoc-plugin</artifactId>
-                <version>3.2.0</version>
-                <configuration>
-                    <show>package</show>
-                    <tags>
-                        <tag>
-                            <name>date</name>
-                        </tag>
-                    </tags>
-                </configuration>
-                <executions>
-                    <execution>
-                        <id>attach-javadocs</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>jar</goal>
-                        </goals>
-                        <configuration>
-                            <doclint>none</doclint>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-			<!-- GPG -->
-            <!-- <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-gpg-plugin</artifactId>
-                <version>1.6</version>
-                <configuration>
-                    <gpgArguments>
-                        <arg>-1-pinentry-mode</arg>
-                        <arg>loopback</arg>
-                    </gpgArguments>
-                </configuration>
-                <executions>
-                    <execution>
-                        <id>sign-artifacts</id>
-                        <phase>verify</phase>
-                        <goals>
-                            <goal>sign</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin> -->
-			<!-- 上下面那个用不了，用这个 -->  
-             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-gpg-plugin</artifactId>
-                <version>1.4</version>
-                <executions>
-                    <execution>
-                        <id>sign-artifacts</id>
-                        <phase>verify</phase>
-                        <goals>
-                            <goal>sign</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin> 
-        </plugins>
+      <plugins>
+        <!-- Source -->
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-source-plugin</artifactId>
+          <version>2.2.1</version>
+          <executions>
+            <execution>
+              <phase>package</phase>
+              <goals>
+                <goal>jar-no-fork</goal>
+              </goals>
+            </execution>
+          </executions>
+        </plugin>
+        <!-- Javadoc -->
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-javadoc-plugin</artifactId>
+          <version>2.9.1</version>
+          <configuration>
+            <show>private</show>
+            <nohelp>true</nohelp>
+            <charset>UTF-8</charset>
+            <encoding>UTF-8</encoding>
+            <docencoding>UTF-8</docencoding>
+            <additionalparam>-Xdoclint:none</additionalparam>
+            <!-- TODO 临时解决不规范的javadoc生成报错,后面要规范化后把这行去掉 -->
+          </configuration>
+          <executions>
+            <execution>
+              <phase>package</phase>
+              <goals>
+                <goal>jar</goal>
+              </goals>
+            </execution>
+          </executions>
+        </plugin>
+        <!-- GPG -->
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-gpg-plugin</artifactId>
+          <version>1.6</version>
+          <executions>
+            <execution>
+              <phase>verify</phase>
+              <goals>
+                <goal>sign</goal>
+              </goals>
+            </execution>
+          </executions>
+        </plugin>
+        <!--Compiler -->
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-compiler-plugin</artifactId>
+          <version>3.0</version>
+          <configuration>
+            <source>1.8</source>
+            <target>1.8</target>
+            <fork>true</fork>
+            <verbose>true</verbose>
+            <encoding>UTF-8</encoding>
+          </configuration>
+        </plugin>
+        <!--Release -->
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-release-plugin</artifactId>
+          <version>2.5.1</version>
+        </plugin>
+      </plugins>
     </build>
+  </profile>
+</profiles>
 </project>
