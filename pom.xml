@@ -6,7 +6,7 @@
 	 
 
     <groupId>com.github.wujun728</groupId>
-    <artifactId>jun-groovyApi-spring-boot-starter</artifactId>
+    <artifactId>jun-groovy-api-spring-boot-starter</artifactId>
     <version>1.0</version>
     <name>groovy_api_starter</name>
     <description>动态生成API并动态发布，并动态执行groovy脚本及SQL脚本的Stater,提供在线执行动态程序脚热加载本及动态生成API并执行</description>
