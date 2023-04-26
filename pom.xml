@@ -6,7 +6,7 @@
 
 	<groupId>io.github.wujun728</groupId>
 	<artifactId>jun-groovy-api-spring-boot-starter</artifactId>
-	<version>0.0.1</version>
+	<version>0.0.1-releases</version>
 	<name>groovy_api_starter</name>
 	<description>groovy_api_starter</description>
 	<url>https://github.com/wujun728/jun-groovy-api-spring-boot-starter</url>
@@ -68,31 +68,11 @@
 			<artifactId>orange</artifactId>
 			<version>1.0</version>
 		</dependency>
-		<!-- <dependency> <groupId>org.springframework.boot</groupId> <artifactId>spring-boot-devtools</artifactId> 
-			<scope>runtime</scope> <optional>true</optional> </dependency> <dependency> 
-			<groupId>org.springframework.boot</groupId> <artifactId>spring-boot-starter-test</artifactId> 
-			<scope>test</scope> </dependency> -->
-		<!-- <dependency> <groupId>org.springframework.restdocs</groupId> <artifactId>spring-restdocs-mockmvc</artifactId> 
-			<scope>test</scope> </dependency> -->
-		<!-- <dependency> <groupId>org.springframework.boot</groupId> <artifactId>spring-boot-configuration-processor</artifactId> 
-			<optional>true</optional> </dependency> -->
-		<!-- https://mvnrepository.com/artifact/org.codehaus.groovy/groovy-all -->
-		<!-- <dependency> <groupId>org.codehaus.groovy</groupId> <artifactId>groovy-all</artifactId> 
-			<version>3.0.0-alpha-4</version> <type>pom</type> <exclusions> <exclusion> 
-			<artifactId>groovy-test</artifactId> <groupId>org.codehaus.groovy</groupId> 
-			</exclusion> <exclusion> <artifactId>groovy-test-junit5</artifactId> <groupId>org.codehaus.groovy</groupId> 
-			</exclusion> <exclusion> <artifactId>groovy-macro</artifactId> <groupId>org.codehaus.groovy</groupId> 
-			</exclusion> <exclusion> <artifactId>groovy-cli-picocli</artifactId> <groupId>org.codehaus.groovy</groupId> 
-			</exclusion> <exclusion> <artifactId>groovy-datetime</artifactId> <groupId>org.codehaus.groovy</groupId> 
-			</exclusion> </exclusions> </dependency> -->
-		<!-- https://mvnrepository.com/artifact/org.codehaus.groovy/groovy -->
 		<dependency>
 			<groupId>org.codehaus.groovy</groupId>
 			<artifactId>groovy</artifactId>
 		</dependency>
-
 	</dependencies>
-
 
 	<developers>
 		<developer>
@@ -133,7 +113,6 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-source-plugin</artifactId>
-				<version>2.2.1</version>
 				<executions>
 					<execution>
 						<phase>package</phase>
@@ -201,4 +180,5 @@
 			</plugin>
 		</plugins>
 	</build>
+
 </project>

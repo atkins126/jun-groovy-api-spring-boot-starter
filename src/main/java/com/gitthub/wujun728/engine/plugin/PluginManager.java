@@ -14,6 +14,10 @@ public class PluginManager {
 //    private static Map<String, TransformPlugin> transformPlugins = new ConcurrentHashMap<>();
 //    private static Map<String, TestPlugin> alarmPlugins = new ConcurrentHashMap<>();
     private static Map<String, BasePlugin> plugins = new ConcurrentHashMap<>();
+    
+    public static void main(String[] args) {
+		PluginManager.loadPlugins();
+	}
 
     public static void loadPlugins() {
 
