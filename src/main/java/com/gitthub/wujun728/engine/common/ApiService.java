@@ -14,6 +14,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cglib.beans.BeanCopier;
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -61,7 +62,7 @@ public class ApiService {
 	
 	@SuppressWarnings("unchecked")
 	public List<ApiDataSource> queryDatasourceList() {
-		List<ApiDataSource> lists = jdbcTemplate.queryForList("select * from api_datasource ", ApiDataSource.class);
+		List<ApiDataSource> lists = jdbcTemplate.query("select * from api_datasource ",new BeanPropertyRowMapper(ApiDataSource.class));
 		return lists;
 	}
 	
@@ -103,17 +104,10 @@ public class ApiService {
 	
 	@SuppressWarnings("unchecked")
 	public ApiDataSource getDatasource(String id) {
-		ApiDataSource info = new ApiDataSource();
-		List<Map<String, Object>> lists = jdbcTemplate.queryForList("select * from api_datasource where id = "+id);
-		if(CollectionUtils.isEmpty(lists)) {
-			lists.forEach(item->{
-				Map m = new HashMap<>();
-				item.forEach((k,v)->{
-					m.put(FieldUtils.columnNameToFieldName(String.valueOf(k)), v);
-				});
-				BeanUtils.copyProperties(m, info);
-			});
-			
+		ApiDataSource info = null;
+		List<ApiDataSource> lists = jdbcTemplate.query("select * from api_datasource ",new BeanPropertyRowMapper(ApiDataSource.class));
+		if(!CollectionUtils.isEmpty(lists) && lists.size()==1) {
+			info = lists.get(0);
 		}
 		log.info(JSON.toJSONString(info));
 		return info;

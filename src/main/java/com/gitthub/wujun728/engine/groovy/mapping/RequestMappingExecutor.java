@@ -31,6 +31,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.AntPathMatcher;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.MultiValueMap;
+import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.HandlerMapping;
@@ -272,8 +273,9 @@ public class RequestMappingExecutor implements ApplicationListener<ContextRefres
 		// 如果是application/json请求，不管接口规定的content-type是什么，接口都可以访问，且请求参数都以json body 为准
 		if (contentType.equalsIgnoreCase(MediaType.APPLICATION_JSON_VALUE)) {
 			JSONObject jo = getHttpJsonBody(request);
-			params = JSONObject.parseObject(jo.toJSONString(), new TypeReference<Map<String, Object>>() {
-			});
+			if(!ObjectUtils.isEmpty(jo)) {
+				params = JSONObject.parseObject(jo.toJSONString(), new TypeReference<Map<String, Object>>() { });
+			}
 		}
 		// 如果是application/x-www-form-urlencoded请求，先判断接口规定的content-type是不是确实是application/x-www-form-urlencoded
 		else if (contentType.equalsIgnoreCase(MediaType.APPLICATION_FORM_URLENCODED_VALUE)) {
