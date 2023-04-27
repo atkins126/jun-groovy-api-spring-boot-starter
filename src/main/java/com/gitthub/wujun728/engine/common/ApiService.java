@@ -46,7 +46,7 @@ public class ApiService {
 	
 	@SuppressWarnings("unchecked")
 	public List<ApiConfig> queryApiConfigList() {
-		List<Map<String, Object>> lists = jdbcTemplate.queryForList("select * from api_config ");
+		List<Map<String, Object>> lists = jdbcTemplate.queryForList("select * from api_config where status = 'ENABLE' ");
 		List<ApiConfig> datas = convert(lists,ApiConfig.class);
 		if(!CollectionUtils.isEmpty(datas)) {
 			datas.stream().map(item->{
