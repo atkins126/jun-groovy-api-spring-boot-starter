@@ -7,7 +7,7 @@ import java.util.concurrent.locks.ReentrantLock;
 
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.pool.DruidPooledConnection;
-import com.gitthub.wujun728.engine.entity.DataSource;
+import com.gitthub.wujun728.engine.common.ApiDataSource;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -22,7 +22,7 @@ public class PoolManager {
   //所有数据源的连接池存在map里
     static ConcurrentHashMap<String, DruidDataSource> map = new ConcurrentHashMap<>();
 
-    public static DruidDataSource getJdbcConnectionPool(DataSource ds) {
+    public static DruidDataSource getJdbcConnectionPool(ApiDataSource ds) {
         if (map.containsKey(ds.getId())) {
             return map.get(ds.getId());
         } else {
@@ -67,7 +67,7 @@ public class PoolManager {
 
     }
 
-    public static DruidPooledConnection getPooledConnection(DataSource ds) throws SQLException {
+    public static DruidPooledConnection getPooledConnection(ApiDataSource ds) throws SQLException {
         DruidDataSource pool = PoolManager.getJdbcConnectionPool(ds);
         DruidPooledConnection connection = pool.getConnection();
 //        log.info("获取连接成功");

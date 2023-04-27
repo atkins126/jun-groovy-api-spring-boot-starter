@@ -5,8 +5,8 @@ import com.alibaba.druid.util.JdbcConstants;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.github.freakchick.orange.engine.DynamicSqlEngine;
-import com.gitthub.wujun728.engine.entity.DataResult;
-import com.gitthub.wujun728.engine.entity.DataSource;
+import com.gitthub.wujun728.engine.common.DataResult;
+import com.gitthub.wujun728.engine.common.ApiDataSource;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -32,7 +32,7 @@ public class JdbcUtil {
 		return resultSet;
 	}
 
-	public static Connection getConnection(DataSource ds) throws Exception {
+	public static Connection getConnection(ApiDataSource ds) throws Exception {
 		try {
 			Class.forName(ds.getDriver());
 			String password = ds.getPassword();
@@ -218,7 +218,7 @@ public class JdbcUtil {
 	
 	
 
-    public static Connection getConnectionByDBType(DataSource ds) throws SQLException, ClassNotFoundException {
+    public static Connection getConnectionByDBType(ApiDataSource ds) throws SQLException, ClassNotFoundException {
         String url = ds.getUrl();
         switch (ds.getType()) {
             case JdbcConstants.MYSQL:
@@ -242,7 +242,7 @@ public class JdbcUtil {
         return connection;
     }
 
-    public static DataResult executeSql(int isSelect, DataSource datasource, String sql, List<Object> jdbcParamValues) {
+    public static DataResult executeSql(int isSelect, ApiDataSource datasource, String sql, List<Object> jdbcParamValues) {
         log.info("sql:\n" + sql);
         DruidPooledConnection connection = null;
         try {

@@ -4,7 +4,7 @@ package com.gitthub.wujun728.engine.plugin;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.gitthub.wujun728.engine.entity.ApiConfig;
+import com.gitthub.wujun728.engine.common.ApiConfig;
 
 import javax.servlet.http.HttpServletRequest;
 

@@ -2,7 +2,7 @@ package com.gitthub.wujun728.engine.plugin.impl;
 
 import java.util.Map;
 
-import com.gitthub.wujun728.engine.entity.ApiConfig;
+import com.gitthub.wujun728.engine.common.ApiConfig;
 import com.gitthub.wujun728.engine.plugin.CachePlugin;
 
 public class DemoCachePlugin extends CachePlugin {

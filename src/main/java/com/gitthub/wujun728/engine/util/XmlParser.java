@@ -4,8 +4,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.w3c.dom.*;
 import org.xml.sax.SAXException;
 
-import com.gitthub.wujun728.engine.entity.DataSource;
-import com.gitthub.wujun728.engine.entity.Sql;
+import com.gitthub.wujun728.engine.common.ApiDataSource;
+import com.gitthub.wujun728.engine.common.Sql;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -23,8 +23,8 @@ import java.util.Map;
 
 public class XmlParser {
 
-    public static Map<String, DataSource> parseDatasource(String text) throws ParserConfigurationException, IOException, SAXException {
-        Map<String, DataSource> map = new HashMap<>();
+    public static Map<String, ApiDataSource> parseDatasource(String text) throws ParserConfigurationException, IOException, SAXException {
+        Map<String, ApiDataSource> map = new HashMap<>();
         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
         Document document = dbf.newDocumentBuilder().parse(new ByteArrayInputStream(text.getBytes()));
         Element documentElement = document.getDocumentElement();
@@ -37,7 +37,7 @@ public class XmlParser {
                 NamedNodeMap attributes = child.getAttributes();
                 Node idAttr = attributes.getNamedItem("id");
                 String id = idAttr.getTextContent();
-                DataSource dataSource = new DataSource();
+                ApiDataSource dataSource = new ApiDataSource();
                 dataSource.setId(id);
 
                 NodeList childNodes = child.getChildNodes();

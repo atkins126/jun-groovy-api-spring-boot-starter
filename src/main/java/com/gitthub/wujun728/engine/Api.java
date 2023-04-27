@@ -10,10 +10,10 @@ import org.springframework.util.ResourceUtils;
 
 import com.github.freakchick.orange.SqlMeta;
 import com.github.freakchick.orange.engine.DynamicSqlEngine;
+import com.gitthub.wujun728.engine.common.DataResult;
+import com.gitthub.wujun728.engine.common.ApiDataSource;
+import com.gitthub.wujun728.engine.common.Sql;
 import com.gitthub.wujun728.engine.config.ApiPorperties;
-import com.gitthub.wujun728.engine.entity.DataResult;
-import com.gitthub.wujun728.engine.entity.DataSource;
-import com.gitthub.wujun728.engine.entity.Sql;
 import com.gitthub.wujun728.engine.util.JdbcUtil;
 import com.gitthub.wujun728.engine.util.XmlParser;
 import com.google.common.collect.Maps;
@@ -28,7 +28,7 @@ public class Api {
     ApiPorperties apiConfig;
 
     Map<String, Sql> sqlMap;
-    Map<String, DataSource> dataSourceMap;
+    Map<String, ApiDataSource> dataSourceMap;
     
     public Api() {
     	this.dataSourceMap = Maps.newHashMap();
@@ -66,7 +66,7 @@ public class Api {
         }
     }
     
-    public void initDataSource(DataSource config) {
+    public void initDataSource(ApiDataSource config) {
         try {
             if(CollectionUtils.isEmpty(this.dataSourceMap)) {
             	this.dataSourceMap = Maps.newHashMap();
@@ -97,7 +97,7 @@ public class Api {
             if (!dataSourceMap.containsKey(sql.getDatasourceId())) {
                 return DataResult.fail("datasource not found : " + sql.getDatasourceId());
             }
-            DataSource dataSource = dataSourceMap.get(sql.getDatasourceId());
+            ApiDataSource dataSource = dataSourceMap.get(sql.getDatasourceId());
             SqlMeta sqlMeta = dynamicSqlEngine.parse(sql.getText(), data);
             int isSelect = 0;
             if (sql.getType().equals("select")) {

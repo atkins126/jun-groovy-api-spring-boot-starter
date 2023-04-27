@@ -1,9 +1,9 @@
-package com.gitthub.wujun728.engine.entity;
+package com.gitthub.wujun728.engine.common;
 
 import lombok.Data;
 
 @Data
-public class DataSource {
+public class ApiDataSource {
 
     String id;
     String name;
