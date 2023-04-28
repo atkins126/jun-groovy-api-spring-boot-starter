@@ -7,8 +7,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 
 import com.gitthub.wujun728.engine.controller.GroovyScriptController;
-import com.gitthub.wujun728.engine.groovy.core.bean.GroovyDynamicLoader;
-
 import javax.script.ScriptEngineManager;
 
 @Configuration

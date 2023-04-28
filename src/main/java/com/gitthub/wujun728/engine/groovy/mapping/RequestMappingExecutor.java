@@ -4,6 +4,8 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -119,9 +121,31 @@ public class RequestMappingExecutor implements ApplicationListener<ContextRefres
 	 */
 	@RequestMapping
 	@ResponseBody
-	public ResponseEntity execute(HttpServletRequest request,HttpServletResponse response) throws Throwable {
+	public void execute(HttpServletRequest request,HttpServletResponse response) throws Throwable {
+		Class<? extends RequestMappingExecutor> cls = this.getClass();
+        //使用方法
+        try {
+            //获取方法 Method 对象
+            Method method = cls.getDeclaredMethod("process", HttpServletRequest.class, HttpServletResponse.class);
+            //执行方法
+            method.invoke(this,request,response);
+        } catch (NoSuchMethodException e) {
+        	defaultMetod(request,response);
+        	//找不到当前子类实现的方法[process]，走默认方法的逻辑
+        	log.warn("找不到当前子类实现的方法[process]，走默认方法的逻辑");
+            e.printStackTrace();
+        } catch (InvocationTargetException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        } 
+	}
+	
+	/**
+	 * 执行脚本逻辑
+	 */
+	public void defaultMetod(HttpServletRequest request,HttpServletResponse response) throws Throwable {
 		log.info("servlet execute");
-		Console.log("servlet execute");
 		String servletPath = request.getRequestURI();
 		PrintWriter out = null;
 		try {
@@ -130,6 +154,7 @@ public class RequestMappingExecutor implements ApplicationListener<ContextRefres
 			DataResult DataResult = process(servletPath, request, response);
 			//  执行SQL逻辑  *****************************************************************************************************
 			//  执行脚本逻辑  *****************************************************************************************************
+			//未实现
 			//  执行脚本逻辑  *****************************************************************************************************
 			
 			out.append(JSON.toJSONString(DataResult));
@@ -142,13 +167,9 @@ public class RequestMappingExecutor implements ApplicationListener<ContextRefres
 			if (out != null)
 				out.close();
 		}
-		
-		
-		return null;
 	}
 	
 	public DataResult process(String path, HttpServletRequest request, HttpServletResponse response) {
-		Console.log("servlet execute");
 		System.out.println("servlet execute");
 //            // 校验接口是否存在
 		ApiConfig config = apiInfoCache.get(path);
@@ -252,7 +273,7 @@ public class RequestMappingExecutor implements ApplicationListener<ContextRefres
 		return Lists.newArrayList();
 		
 	}
-	private Map<String, Object> getParams(HttpServletRequest request, ApiConfig apiConfig) {
+	protected Map<String, Object> getParams(HttpServletRequest request, ApiConfig apiConfig) {
 		/**
 		 * Content-Type格式说明: {@see <a href=
 		 * "https://www.w3.org/Protocols/rfc1341/4_Content-Type.html">Content-Type</a>}
@@ -292,7 +313,7 @@ public class RequestMappingExecutor implements ApplicationListener<ContextRefres
 		return params;
 	}
 
-	private JSONObject getHttpJsonBody(HttpServletRequest request) {
+	protected JSONObject getHttpJsonBody(HttpServletRequest request) {
 		try {
 			InputStreamReader in = new InputStreamReader(request.getInputStream(), "utf-8");
 			BufferedReader br = new BufferedReader(in);

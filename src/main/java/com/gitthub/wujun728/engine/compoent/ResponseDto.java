@@ -1,3 +1,4 @@
+package com.gitthub.wujun728.engine.compoent;
 //package com.gitthub.wujun728.engine.base;
 //
 //import com.alibaba.fastjson.annotation.JSONField;

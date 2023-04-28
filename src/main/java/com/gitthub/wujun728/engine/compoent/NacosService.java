@@ -1,4 +1,4 @@
-package com.gitthub.wujun728.engine.base;
+package com.gitthub.wujun728.engine.compoent;
 //package com.jun.plugin.engine.core.mapping.service;
 //
 //import lombok.extern.slf4j.Slf4j;
