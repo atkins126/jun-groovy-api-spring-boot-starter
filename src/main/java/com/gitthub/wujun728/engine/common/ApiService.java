@@ -51,9 +51,25 @@ public class ApiService {
 		List<ApiConfig> datas = convert(lists,ApiConfig.class);
 		if(!CollectionUtils.isEmpty(datas)) {
 			datas.stream().map(item->{
-					item.setSqlList(querySQLList(item.getId()));
-					return item;
+				List<ApiSql> sqlList = Lists.newArrayList();
+				if("sql".equalsIgnoreCase(item.getScriptType())) {
+					String sqls[] = item.getScriptContent().split(";");
+					if(sqls.length>0) {
+						for(String sql : sqls) {
+							if(StringUtils.isEmpty(sql)) {
+								continue;
+							}
+							ApiSql apisql = new ApiSql();
+							apisql.setApiId(item.getId());
+							apisql.setSqlText(sql);
+							sqlList.add(apisql);
+						}
+					}
 				}
+				item.setSqlList(sqlList);
+					
+				return item;
+			}
 			).collect(Collectors.toList());
 		}
 		log.info(JSON.toJSONString(datas));

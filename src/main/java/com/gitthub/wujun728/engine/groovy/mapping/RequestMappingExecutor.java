@@ -44,11 +44,11 @@ import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.freakchick.orange.SqlMeta;
-import com.gitthub.wujun728.engine.base.ResponseDto;
 import com.gitthub.wujun728.engine.common.ApiConfig;
 import com.gitthub.wujun728.engine.common.ApiDataSource;
 import com.gitthub.wujun728.engine.common.ApiService;
 import com.gitthub.wujun728.engine.common.ApiSql;
+import com.gitthub.wujun728.engine.common.DataResult;
 import com.gitthub.wujun728.engine.groovy.cache.IApiConfigCache;
 import com.gitthub.wujun728.engine.plugin.CachePlugin;
 import com.gitthub.wujun728.engine.plugin.PluginManager;
@@ -106,13 +106,13 @@ public class RequestMappingExecutor implements ApplicationListener<ContextRefres
 
 	}
 
-	private String buildLocalLink() {
-		String content = serverProperties.getServlet().getContextPath() == null ? ""
-				: serverProperties.getServlet().getContextPath();
-		Integer port = serverProperties.getPort() == null ? 8080 : serverProperties.getPort();
-		return "http://localhost:" + port
-				+ ("/" + content + apiProperties.getBaseRegisterPath()).replace("//", "/");
-	}
+//	private String buildLocalLink() {
+//		String content = serverProperties.getServlet().getContextPath() == null ? ""
+//				: serverProperties.getServlet().getContextPath();
+//		Integer port = serverProperties.getPort() == null ? 8080 : serverProperties.getPort();
+//		return "http://localhost:" + port
+//				+ ("/" + content + apiProperties.getBaseRegisterPath()).replace("//", "/");
+//	}
 
 	/**
 	 * 执行脚本逻辑
@@ -127,16 +127,16 @@ public class RequestMappingExecutor implements ApplicationListener<ContextRefres
 		try {
 			out = response.getWriter();
 			//  执行SQL逻辑  *****************************************************************************************************
-			ResponseDto responseDto = process(servletPath, request, response);
+			DataResult DataResult = process(servletPath, request, response);
 			//  执行SQL逻辑  *****************************************************************************************************
 			//  执行脚本逻辑  *****************************************************************************************************
 			//  执行脚本逻辑  *****************************************************************************************************
 			
-			out.append(JSON.toJSONString(responseDto));
+			out.append(JSON.toJSONString(DataResult));
 
 		} catch (Exception e) {
 			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-			out.append(JSON.toJSONString(ResponseDto.fail(e.toString())));
+			out.append(JSON.toJSONString(DataResult.fail(e.toString())));
 			log.error(e.toString(), e);
 		} finally {
 			if (out != null)
@@ -147,7 +147,7 @@ public class RequestMappingExecutor implements ApplicationListener<ContextRefres
 		return null;
 	}
 	
-	public ResponseDto process(String path, HttpServletRequest request, HttpServletResponse response) {
+	public DataResult process(String path, HttpServletRequest request, HttpServletResponse response) {
 		Console.log("servlet execute");
 		System.out.println("servlet execute");
 //            // 校验接口是否存在
@@ -155,19 +155,21 @@ public class RequestMappingExecutor implements ApplicationListener<ContextRefres
 		if (config == null) {
 			response.setStatus(HttpServletResponse.SC_NOT_FOUND);
 			Console.log("servlet execute");
-			return ResponseDto.fail("Api not exists");
+			return DataResult.fail("Api not exists");
 		}
 
 		try {
 			ApiDataSource datasource = apiService.getDatasource(config.getDatasourceId());
 			if (datasource == null) {
 				response.setStatus(500);
-				return ResponseDto.fail("Datasource not exists!");
+				return DataResult.fail("Datasource not exists!");
 			}
 
 			Map<String, Object> sqlParam = getParams(request, config);
-
 			List<ApiSql> sqlList = config.getSqlList();
+			if (CollectionUtils.isEmpty(sqlParam) && !CollectionUtils.isEmpty(sqlList) && JSON.toJSONString(sqlList).contains("#")) {
+				return DataResult.fail("Request parameter is not exists(请求入参不能为空)!");
+			}
 			ApiDataSource ds = new ApiDataSource();
 			BeanUtil.copyProperties(datasource,ds, false);
 			DruidPooledConnection connection = PoolManager.getPooledConnection(ds);
@@ -175,7 +177,6 @@ public class RequestMappingExecutor implements ApplicationListener<ContextRefres
 			boolean flag = config.getOpenTrans() == 1 ? true : false;
 			// 执行sql
 			List<Object> dataList = executeSql(connection, sqlList, sqlParam, flag);
-
 			// 执行数据转换
 			for (int i = 0; i < sqlList.size(); i++) {
 				ApiSql apiSql = sqlList.get(i);
@@ -194,15 +195,14 @@ public class RequestMappingExecutor implements ApplicationListener<ContextRefres
 			if (dataList.size() == 1) {
 				res = dataList.get(0);
 			}
-			ResponseDto dto = ResponseDto.apiSuccess(res);
 			// 设置缓存
 			if (StringUtils.isNoneBlank(config.getCachePlugin())) {
 				CachePlugin cachePlugin = (CachePlugin) PluginManager.getPlugin(config.getCachePlugin());
 				ApiConfig apiConfig = new ApiConfig();
 				BeanUtil.copyProperties(config,apiConfig, false);
-				cachePlugin.set(apiConfig, sqlParam, dto.getData());
+				cachePlugin.set(apiConfig, sqlParam, res);
 			}
-			return dto;
+			return DataResult.success(res);
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw new RuntimeException(e.getMessage());

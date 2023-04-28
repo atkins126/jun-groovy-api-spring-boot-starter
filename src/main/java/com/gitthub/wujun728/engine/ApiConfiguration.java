@@ -14,46 +14,65 @@ import com.gitthub.wujun728.engine.groovy.core.bean.GroovyDynamicLoader;
 import com.gitthub.wujun728.engine.groovy.mapping.ApiProperties;
 import com.gitthub.wujun728.engine.groovy.mapping.RequestMappingExecutor;
 import com.gitthub.wujun728.engine.groovy.mapping.RequestMappingService;
+import com.gitthub.wujun728.engine.util.JdbcUtil;
 
 @Configuration
 //@ConditionalOnProperty(prefix = "spring.groovy-api", name = "enabled", havingValue = "true", matchIfMissing = true)
 @EnableConfigurationProperties(ApiPorperties.class)
 public class ApiConfiguration {
 
-    private final ApiPorperties dbConfig;
+	private final ApiPorperties dbConfig;
 
-    public ApiConfiguration(ApiPorperties config) {
-        this.dbConfig = config;
-    }
+	public ApiConfiguration(ApiPorperties config) {
+		this.dbConfig = config;
+	}
 
-    @Bean
-    @ConditionalOnMissingBean(Api.class)
-    public Api Engine(){
-        return new Api();
-    }
-    @Bean
-    public GroovyDynamicLoader groovyDynamicLoader() {
-    	return new GroovyDynamicLoader();
-    }
-    @Bean
-    public ApiService apiService() {
-    	return new ApiService();
-    }
-    @Bean
-    public IApiConfigCache apiConfigCache() {
-    	return new DefaultApiConfigCache();
-    }
-    @Bean
-    public RequestMappingService requestMappingService() {
-    	return new RequestMappingService();
-    }
-    @Bean
-    public ApiProperties apiProperties() {
-    	return new ApiProperties();
-    }
-    @Bean
-    public RequestMappingExecutor requestMappingExecutor() {
-    	return new RequestMappingExecutor();
-    }
-    
+	@Bean
+	@ConditionalOnMissingBean(Api.class)
+	public Api Engine() {
+		return new Api();
+	}
+
+	@Bean
+	@ConditionalOnMissingBean(GroovyDynamicLoader.class)
+	public GroovyDynamicLoader groovyDynamicLoader() {
+		return new GroovyDynamicLoader();
+	}
+
+	@Bean
+	@ConditionalOnMissingBean(ApiService.class)
+	public ApiService apiService() {
+		return new ApiService();
+	}
+
+	@Bean
+	@ConditionalOnMissingBean(IApiConfigCache.class)
+	public IApiConfigCache apiConfigCache() {
+		return new DefaultApiConfigCache();
+	}
+
+	@Bean
+	@ConditionalOnMissingBean(RequestMappingService.class)
+	public RequestMappingService requestMappingService() {
+		return new RequestMappingService();
+	}
+
+	@Bean
+	@ConditionalOnMissingBean(ApiProperties.class)
+	public ApiProperties apiProperties() {
+		return new ApiProperties();
+	}
+
+	@Bean
+	@ConditionalOnMissingBean(RequestMappingExecutor.class)
+	public RequestMappingExecutor requestMappingExecutor() {
+		return new RequestMappingExecutor();
+	}
+	
+	@Bean
+	@ConditionalOnMissingBean(JdbcUtil.class)
+	public JdbcUtil jdbcUtil() {
+		return new JdbcUtil();
+	}
+
 }
