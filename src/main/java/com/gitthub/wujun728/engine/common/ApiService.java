@@ -72,7 +72,7 @@ public class ApiService {
 			}
 			).collect(Collectors.toList());
 		}
-		log.info(JSON.toJSONString(datas));
+		//log.info(JSON.toJSONString(datas));
 		return datas;
 	}
 	
@@ -86,7 +86,7 @@ public class ApiService {
 	public List<ApiSql> querySQLList(String apiId) {
 		List<Map<String, Object>> lists = jdbcTemplate.queryForList("select * from api_sql where api_id = "+apiId);
 		List<ApiSql> datas = convert(lists,ApiSql.class);
-		log.info(JSON.toJSONString(datas));
+		//log.info(JSON.toJSONString(datas));
 		return datas;
 	}
 	
@@ -114,7 +114,7 @@ public class ApiService {
 			});
 			
 		}
-		log.info(JSON.toJSONString(datas));
+		//log.info(JSON.toJSONString(datas));
 		return datas;
 	}
 	
@@ -125,7 +125,7 @@ public class ApiService {
 		if(!CollectionUtils.isEmpty(lists) && lists.size()==1) {
 			info = lists.get(0);
 		}
-		log.info(JSON.toJSONString(info));
+		//log.info(JSON.toJSONString(info));
 		return info;
 	}
 	

@@ -10,6 +10,7 @@ import com.gitthub.wujun728.engine.common.ApiService;
 import com.gitthub.wujun728.engine.config.ApiPorperties;
 import com.gitthub.wujun728.engine.groovy.cache.DefaultApiConfigCache;
 import com.gitthub.wujun728.engine.groovy.cache.IApiConfigCache;
+import com.gitthub.wujun728.engine.groovy.core.bean.GroovyDynamicLoader;
 import com.gitthub.wujun728.engine.groovy.mapping.ApiProperties;
 import com.gitthub.wujun728.engine.groovy.mapping.RequestMappingExecutor;
 import com.gitthub.wujun728.engine.groovy.mapping.RequestMappingService;
@@ -33,11 +34,11 @@ public class ApiConfiguration {
 		return new Api();
 	}
 
-//	@Bean
-//	@ConditionalOnMissingBean(GroovyDynamicLoader.class)
-//	public GroovyDynamicLoader groovyDynamicLoader() {
-//		return new GroovyDynamicLoader();
-//	}
+	@Bean
+	@ConditionalOnMissingBean(GroovyDynamicLoader.class)
+	public GroovyDynamicLoader groovyDynamicLoader() {
+		return new GroovyDynamicLoader();
+	}
 
 	@Bean
 	@ConditionalOnMissingBean(ApiService.class)
