@@ -14,8 +14,6 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
-import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -23,12 +21,10 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.web.ServerProperties;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.util.AntPathMatcher;
 import org.springframework.util.CollectionUtils;
@@ -41,7 +37,6 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import com.alibaba.druid.pool.DruidPooledConnection;
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -64,18 +59,9 @@ import cn.hutool.core.lang.Console;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 
-/**
- * 将存储的API注册为request mapping,并且提供对入参及存储的执行脚本进行解析。 输出解析后的最终脚本提供给脚本执行器`@Link
- * DataSourceDialect`。然后对结果进行封装返回
- */
-@SuppressWarnings("DuplicatedCode")
 @Slf4j
 @Component
 public class RequestMappingExecutor implements ApplicationListener<ContextRefreshedEvent> {
-
-//	@Autowired
-//	@Lazy
-//	private IScriptParse scriptParse;
 
 	@Autowired
 	private ObjectMapper objectMapper;
@@ -89,18 +75,8 @@ public class RequestMappingExecutor implements ApplicationListener<ContextRefres
     @Autowired
     private IApiConfigCache apiInfoCache;
 	
-//    @Autowired
-//    @Lazy
-//    private IScriptParse scriptParse;
-
-//	@Autowired
-//	private IResultWrapper resultWrapper;
-
 	@Autowired
 	private ServerProperties serverProperties;
-
-//	@Autowired
-//	private DataSourceService dataSourceService;
 
 	private List<String> bodyMethods = Arrays.asList("POST", "PUT", "PATCH");
 
@@ -108,13 +84,12 @@ public class RequestMappingExecutor implements ApplicationListener<ContextRefres
 
 	}
 
-//	private String buildLocalLink() {
-//		String content = serverProperties.getServlet().getContextPath() == null ? ""
-//				: serverProperties.getServlet().getContextPath();
-//		Integer port = serverProperties.getPort() == null ? 8080 : serverProperties.getPort();
-//		return "http://localhost:" + port
-//				+ ("/" + content + apiProperties.getBaseRegisterPath()).replace("//", "/");
-//	}
+	private String getIpAndAdress() {
+		String content = serverProperties.getServlet().getContextPath() == null ? ""
+				: serverProperties.getServlet().getContextPath();
+		Integer port = serverProperties.getPort() == null ? 8080 : serverProperties.getPort();
+		return "http://localhost:" + port + ("/" + content + apiProperties.getBaseRegisterPath()).replace("//", "/");
+	}
 
 	/**
 	 * 执行脚本逻辑
@@ -150,13 +125,7 @@ public class RequestMappingExecutor implements ApplicationListener<ContextRefres
 		PrintWriter out = null;
 		try {
 			out = response.getWriter();
-			//  执行SQL逻辑  *****************************************************************************************************
 			DataResult DataResult = process(servletPath, request, response);
-			//  执行SQL逻辑  *****************************************************************************************************
-			//  执行脚本逻辑  *****************************************************************************************************
-			//未实现
-			//  执行脚本逻辑  *****************************************************************************************************
-			
 			out.append(JSON.toJSONString(DataResult));
 
 		} catch (Exception e) {
@@ -171,21 +140,19 @@ public class RequestMappingExecutor implements ApplicationListener<ContextRefres
 	
 	public DataResult process(String path, HttpServletRequest request, HttpServletResponse response) {
 		System.out.println("servlet execute");
-//            // 校验接口是否存在
+        // 校验接口是否存在
 		ApiConfig config = apiInfoCache.get(path);
 		if (config == null) {
 			response.setStatus(HttpServletResponse.SC_NOT_FOUND);
 			Console.log("servlet execute");
 			return DataResult.fail("Api not exists");
 		}
-
 		try {
 			ApiDataSource datasource = apiService.getDatasource(config.getDatasourceId());
 			if (datasource == null) {
 				response.setStatus(500);
 				return DataResult.fail("Datasource not exists!");
 			}
-
 			Map<String, Object> sqlParam = getParams(request, config);
 			List<ApiSql> sqlList = config.getSqlList();
 			if (CollectionUtils.isEmpty(sqlParam) && !CollectionUtils.isEmpty(sqlList) && JSON.toJSONString(sqlList).contains("#")) {
@@ -273,12 +240,8 @@ public class RequestMappingExecutor implements ApplicationListener<ContextRefres
 		return Lists.newArrayList();
 		
 	}
+	
 	protected Map<String, Object> getParams(HttpServletRequest request, ApiConfig apiConfig) {
-		/**
-		 * Content-Type格式说明: {@see <a href=
-		 * "https://www.w3.org/Protocols/rfc1341/4_Content-Type.html">Content-Type</a>}
-		 * type/subtype(;parameter)? type
-		 */
 		String unParseContentType = request.getContentType();
 
 		// 如果是浏览器get请求过来，取出来的contentType是null
@@ -289,7 +252,6 @@ public class RequestMappingExecutor implements ApplicationListener<ContextRefres
 		// 解析contentType 格式: appliation/json;charset=utf-8
 		String[] contentTypeArr = unParseContentType.split(";");
 		String contentType = contentTypeArr[0];
-
 		Map<String, Object> params = null;
 		// 如果是application/json请求，不管接口规定的content-type是什么，接口都可以访问，且请求参数都以json body 为准
 		if (contentType.equalsIgnoreCase(MediaType.APPLICATION_JSON_VALUE)) {
@@ -309,7 +271,16 @@ public class RequestMappingExecutor implements ApplicationListener<ContextRefres
 		} else {
 			throw new RuntimeException("content-type not supported: " + contentType);
 		}
-
+		String uri = request.getRequestURI();
+		Map<String, String> header = RequestMappingExecutor.buildHeaderParams(request);
+		String pattern = RequestMappingExecutor.buildPattern(request);
+		Map<String, Object> session = RequestMappingExecutor.buildSessionParams(request);
+		Map<String, Object> urivar = this.getParam(uri);
+		Map<String,String> pathvar = this.getPathVar(pattern, uri);
+		params.putAll(pathvar);
+		params.putAll(urivar);
+		params.putAll(session);
+		params.putAll(header);
 		return params;
 	}
 
@@ -332,11 +303,6 @@ public class RequestMappingExecutor implements ApplicationListener<ContextRefres
 		}
 		return null;
 	}
-	
-	
-	
-	
-	
 
 	@SneakyThrows
 	@Override
@@ -362,7 +328,7 @@ public class RequestMappingExecutor implements ApplicationListener<ContextRefres
 	}
 
 	public static Map<String, String> buildHeaderParams(HttpServletRequest request)
-			throws UnsupportedEncodingException {
+	/* throws UnsupportedEncodingException */{
 		Enumeration<String> headerKeys = request.getHeaderNames();
 		Map<String, String> result = new HashMap<>();
 		while (headerKeys.hasMoreElements()) {
