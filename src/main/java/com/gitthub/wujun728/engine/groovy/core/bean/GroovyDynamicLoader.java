@@ -26,7 +26,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
 
-import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson2.JSON;
 import com.gitthub.wujun728.engine.common.ApiConfig;
 import com.gitthub.wujun728.engine.common.ApiService;
 import com.gitthub.wujun728.engine.groovy.cache.IApiConfigCache;

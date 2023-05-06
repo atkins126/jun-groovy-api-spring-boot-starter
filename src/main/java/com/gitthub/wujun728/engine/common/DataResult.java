@@ -1,7 +1,7 @@
 package com.gitthub.wujun728.engine.common;
 
-import com.alibaba.fastjson.annotation.JSONField;
-import com.alibaba.fastjson.serializer.SerializerFeature;
+import com.alibaba.fastjson2.JSONWriter;
+import com.alibaba.fastjson2.annotation.JSONField;
 
 import lombok.Data;
 
@@ -26,7 +26,7 @@ public class DataResult {
      */
     private String msg;
 
-    @JSONField(serialzeFeatures = {SerializerFeature.WriteMapNullValue})
+    @JSONField(serializeFeatures = {JSONWriter.Feature.WriteMapNullValue})
     private Object data;
     
     boolean success;
