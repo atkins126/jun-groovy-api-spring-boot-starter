@@ -14,6 +14,7 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -69,13 +70,13 @@ public class RequestMappingExecutor implements ApplicationListener<ContextRefres
 
 	@Autowired
 	private ApiProperties apiProperties;
-	
+
 	@Autowired
 	private ApiService apiService;
-	
-    @Autowired
-    private IApiConfigCache apiInfoCache;
-	
+
+	@Autowired
+	private IApiConfigCache apiInfoCache;
+
 	@Autowired
 	private ServerProperties serverProperties;
 
@@ -97,30 +98,30 @@ public class RequestMappingExecutor implements ApplicationListener<ContextRefres
 	 */
 	@RequestMapping
 	@ResponseBody
-	public void execute(HttpServletRequest request,HttpServletResponse response) throws Throwable {
+	public void execute(HttpServletRequest request, HttpServletResponse response) throws Throwable {
 		Class<? extends RequestMappingExecutor> cls = this.getClass();
-        //使用方法
-        try {
-            //获取方法 Method 对象
-            Method method = cls.getDeclaredMethod("process", HttpServletRequest.class, HttpServletResponse.class);
-            //执行方法
-            method.invoke(this,request,response);
-        } catch (NoSuchMethodException e) {
-        	defaultMetod(request,response);
-        	//找不到当前子类实现的方法[process]，走默认方法的逻辑
-        	log.warn("找不到当前子类实现的方法[process]，走默认方法的逻辑");
-            e.printStackTrace();
-        } catch (InvocationTargetException e) {
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        } 
+		// 使用方法
+		try {
+			// 获取方法 Method 对象
+			Method method = cls.getDeclaredMethod("process", HttpServletRequest.class, HttpServletResponse.class);
+			// 执行方法
+			method.invoke(this, request, response);
+		} catch (NoSuchMethodException e) {
+			defaultMetod(request, response);
+			// 找不到当前子类实现的方法[process]，走默认方法的逻辑
+			log.warn("找不到当前子类实现的方法[process]，走默认方法的逻辑");
+			e.printStackTrace();
+		} catch (InvocationTargetException e) {
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			e.printStackTrace();
+		}
 	}
-	
+
 	/**
 	 * 执行脚本逻辑
 	 */
-	public void defaultMetod(HttpServletRequest request,HttpServletResponse response) throws Throwable {
+	public void defaultMetod(HttpServletRequest request, HttpServletResponse response) throws Throwable {
 		log.info("servlet execute");
 		String servletPath = request.getRequestURI();
 		PrintWriter out = null;
@@ -138,10 +139,10 @@ public class RequestMappingExecutor implements ApplicationListener<ContextRefres
 				out.close();
 		}
 	}
-	
+
 	public DataResult process(String path, HttpServletRequest request, HttpServletResponse response) {
 		System.out.println("servlet execute");
-        // 校验接口是否存在
+		// 校验接口是否存在
 		ApiConfig config = apiInfoCache.get(path);
 		if (config == null) {
 			response.setStatus(HttpServletResponse.SC_NOT_FOUND);
@@ -156,11 +157,12 @@ public class RequestMappingExecutor implements ApplicationListener<ContextRefres
 			}
 			Map<String, Object> sqlParam = getParams(request, config);
 			List<ApiSql> sqlList = config.getSqlList();
-			if (CollectionUtils.isEmpty(sqlParam) && !CollectionUtils.isEmpty(sqlList) && JSON.toJSONString(sqlList).contains("#")) {
+			if (CollectionUtils.isEmpty(sqlParam) && !CollectionUtils.isEmpty(sqlList)
+					&& JSON.toJSONString(sqlList).contains("#")) {
 				return DataResult.fail("Request parameter is not exists(请求入参不能为空)!");
 			}
 			ApiDataSource ds = new ApiDataSource();
-			BeanCopyUtil.copyField(datasource,ds);
+			BeanCopyUtil.copyField(datasource, ds);
 			DruidPooledConnection connection = PoolManager.getPooledConnection(ds);
 			// 是否开启事务
 			boolean flag = config.getOpenTrans() == 1 ? true : false;
@@ -174,7 +176,8 @@ public class RequestMappingExecutor implements ApplicationListener<ContextRefres
 				if (data instanceof Iterable && StringUtils.isNotBlank(apiSql.getTransformPlugin())) {
 					log.info("transform plugin execute");
 					List<JSONObject> sourceData = (List<JSONObject>) (data); // 查询类sql的返回结果才可以这样强制转换，只有查询类sql才可以配置转换插件
-					TransformPlugin transformPlugin = (TransformPlugin) PluginManager.getPlugin(apiSql.getTransformPlugin());
+					TransformPlugin transformPlugin = (TransformPlugin) PluginManager
+							.getPlugin(apiSql.getTransformPlugin());
 					Object resData = transformPlugin.transform(sourceData, apiSql.getTransformPluginParams());
 					dataList.set(i, resData);// 重新设置值
 				}
@@ -197,7 +200,6 @@ public class RequestMappingExecutor implements ApplicationListener<ContextRefres
 			throw new RuntimeException(e.getMessage());
 		}
 	}
-	
 
 	public List<Object> executeSql(Connection connection, List<ApiSql> sqlList, Map<String, Object> sqlParam,
 			boolean flag) {
@@ -235,13 +237,13 @@ public class RequestMappingExecutor implements ApplicationListener<ContextRefres
 	}
 
 	private List<String> getSQLs(ApiConfig apiConfig) {
-		if(StringUtils.isNotEmpty(apiConfig.getScriptContent())) {
+		if (StringUtils.isNotEmpty(apiConfig.getScriptContent())) {
 			return Arrays.asList(apiConfig.getScriptContent().split("###"));
 		}
 		return Lists.newArrayList();
-		
+
 	}
-	
+
 	protected Map<String, Object> getParams(HttpServletRequest request, ApiConfig apiConfig) {
 		String unParseContentType = request.getContentType();
 
@@ -257,14 +259,15 @@ public class RequestMappingExecutor implements ApplicationListener<ContextRefres
 		// 如果是application/json请求，不管接口规定的content-type是什么，接口都可以访问，且请求参数都以json body 为准
 		if (contentType.equalsIgnoreCase(MediaType.APPLICATION_JSON_VALUE)) {
 			JSONObject jo = getHttpJsonBody(request);
-			if(!ObjectUtils.isEmpty(jo)) {
-				params = JSONObject.parseObject(jo.toJSONString(), new TypeReference<Map<String, Object>>() { });
+			if (!ObjectUtils.isEmpty(jo)) {
+				params = JSONObject.parseObject(jo.toJSONString(), new TypeReference<Map<String, Object>>() {
+				});
 			}
 		}
 		// 如果是application/x-www-form-urlencoded请求，先判断接口规定的content-type是不是确实是application/x-www-form-urlencoded
 		else if (contentType.equalsIgnoreCase(MediaType.APPLICATION_FORM_URLENCODED_VALUE)) {
 			if (MediaType.APPLICATION_FORM_URLENCODED_VALUE.equalsIgnoreCase(apiConfig.getContentType())) {
-				params =apiService.getSqlParam(request, apiConfig);
+				params = apiService.getSqlParam(request, apiConfig);
 			} else {
 				throw new RuntimeException("this API only support content-type: " + apiConfig.getContentType()
 						+ ", but you use: " + contentType);
@@ -274,14 +277,26 @@ public class RequestMappingExecutor implements ApplicationListener<ContextRefres
 		}
 		String uri = request.getRequestURI();
 		Map<String, String> header = RequestMappingExecutor.buildHeaderParams(request);
-		String pattern = RequestMappingExecutor.buildPattern(request);
 		Map<String, Object> session = RequestMappingExecutor.buildSessionParams(request);
-		Map<String, Object> urivar = this.getParam(uri);
-		Map<String,String> pathvar = this.getPathVar(pattern, uri);
-		params.putAll(pathvar);
-		params.putAll(urivar);
-		params.putAll(session);
-		params.putAll(header);
+		Map<String, Object> urivar = this.getParam(request);
+		String pattern = RequestMappingExecutor.buildPattern(request);
+		Map<String, String> pathvar = this.getPathVar(pattern, uri);
+		Map<String, Object> params1 = RequestMappingExecutor.getParams(request);
+		if (!CollectionUtils.isEmpty(session)) {
+			params.putAll(session);
+		}
+		if (!CollectionUtils.isEmpty(header)) {
+			params.putAll(header);
+		}
+		if (!CollectionUtils.isEmpty(pathvar)) {
+			params.putAll(pathvar);
+		}
+		if (!CollectionUtils.isEmpty(urivar)) {
+			params.putAll(urivar);
+		}
+		if (!CollectionUtils.isEmpty(params1)) {
+			params.putAll(params1);
+		}
 		return params;
 	}
 
@@ -329,7 +344,7 @@ public class RequestMappingExecutor implements ApplicationListener<ContextRefres
 	}
 
 	public static Map<String, String> buildHeaderParams(HttpServletRequest request)
-	/* throws UnsupportedEncodingException */{
+	/* throws UnsupportedEncodingException */ {
 		Enumeration<String> headerKeys = request.getHeaderNames();
 		Map<String, String> result = new HashMap<>();
 		while (headerKeys.hasMoreElements()) {
@@ -339,29 +354,56 @@ public class RequestMappingExecutor implements ApplicationListener<ContextRefres
 		}
 		return result;
 	}
-	
-    private Map<String,String> getPathVar(String pattern,String url){
-        Integer beginIndex = url.indexOf("/",8);
-        if (beginIndex == -1){
-            return null;
-        }
-        Integer endIndex = url.indexOf("?") == -1?url.length():url.indexOf("?");
-        String path = url.substring(beginIndex,endIndex);
-        AntPathMatcher matcher = new AntPathMatcher();
-        if (matcher.match(pattern,path)){
-            return matcher.extractUriTemplateVariables(pattern,path);
-        }
-        return null;
-    }
 
-    private Map<String,Object> getParam(String url) {
-        Map<String,Object> result = new HashMap<>();
-        MultiValueMap<String, String> urlMvp = UriComponentsBuilder.fromHttpUrl(url).build().getQueryParams();
-        urlMvp.forEach((key,value)->{
-            String firstValue = CollectionUtils.isEmpty(value)?null:value.get(0);
-            result.put(key,firstValue);
-        });
-        return  result;
-    }
-    
+	private Map<String, String> getPathVar(String pattern, String url) {
+		Integer beginIndex = url.indexOf("/", 8);
+		if (beginIndex == -1) {
+			return null;
+		}
+		Integer endIndex = url.indexOf("?") == -1 ? url.length() : url.indexOf("?");
+		String path = url.substring(beginIndex, endIndex);
+		AntPathMatcher matcher = new AntPathMatcher();
+		if (matcher.match(pattern, path)) {
+			return matcher.extractUriTemplateVariables(pattern, path);
+		}
+		return null;
+	}
+
+	private Map<String, Object> getParam(HttpServletRequest request) {
+		StringBuffer url = request.getRequestURL();
+        if (request.getQueryString() != null) {
+            url.append("?");
+            url.append(request.getQueryString());
+        }
+		Map<String, Object> result = new HashMap<>();
+		MultiValueMap<String, String> urlMvp = UriComponentsBuilder.fromHttpUrl(url.toString()).build().getQueryParams();
+		urlMvp.forEach((key, value) -> {
+			String firstValue = CollectionUtils.isEmpty(value) ? null : value.get(0);
+			result.put(key, firstValue);
+		});
+		return result;
+	}
+
+	public static Map<String, Object> getParams(HttpServletRequest request) {
+		Map<String, Object> map = new HashMap<String, Object>();
+		Enumeration paramNames = request.getParameterNames();
+		while (paramNames.hasMoreElements()) {
+			String paramName = (String) paramNames.nextElement();
+			String[] paramValues = request.getParameterValues(paramName);
+			if (paramValues.length > 0) {
+				String paramValue = paramValues[0];
+				if (paramValue.length() != 0) {
+					map.put(paramName, paramValue);
+				}
+			}
+		}
+		Set<Map.Entry<String, Object>> set = map.entrySet();
+		log.debug("==============================================================");
+		for (Map.Entry entry : set) {
+			log.debug(entry.getKey() + ":" + entry.getValue());
+		}
+		log.debug("=============================================================");
+		return map;
+	}
+
 }
