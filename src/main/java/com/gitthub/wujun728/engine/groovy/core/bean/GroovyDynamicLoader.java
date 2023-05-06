@@ -34,7 +34,7 @@ import com.gitthub.wujun728.engine.groovy.core.cache.GroovyInfo;
 import com.gitthub.wujun728.engine.groovy.core.cache.GroovyInnerCache;
 import com.gitthub.wujun728.engine.groovy.mapping.RequestMappingService;
 
-import cn.hutool.core.lang.Console;
+//import cn.hutool.core.lang.Console;
 import groovy.lang.GroovyClassLoader;
 import lombok.extern.slf4j.Slf4j;
 
@@ -97,11 +97,11 @@ public class GroovyDynamicLoader implements ApplicationContextAware, Initializin
 		refreshMapping(groovyScripts);
 	}
 
+	@SuppressWarnings("rawtypes")
 	private void initNew(List<GroovyInfo> groovyInfos) {
 		if (CollectionUtils.isEmpty(groovyInfos)) {
 			return;
 		}
-
 		this.registry = (BeanDefinitionRegistry) applicationContext.getAutowireCapableBeanFactory();
 		for (GroovyInfo groovyInfo : groovyInfos) {
 			try {
@@ -121,13 +121,7 @@ public class GroovyDynamicLoader implements ApplicationContextAware, Initializin
 			log.info("当前groovyInfo加载成功,className-{},interfaceId-{},beanName-{},BeanType-{}：",groovyInfo.getClassName(),groovyInfo.getInterfaceId(),groovyInfo.getBeanName(),groovyInfo.getBeanType());
 		}
 
-//		ConfigurationXMLWriter config = new ConfigurationXMLWriter();
-//
-//		addConfiguration(config, groovyInfos);
-//		
 		GroovyInnerCache.put2map(groovyInfos);
-//		
-//		loadBeanDefinitions(config);
 	}
 
 	private void init() {
@@ -177,20 +171,13 @@ public class GroovyDynamicLoader implements ApplicationContextAware, Initializin
 
 		destroyScriptBeanFactory();
 
-//		ConfigurationXMLWriter config = new ConfigurationXMLWriter();
-
-//		addConfiguration(config, groovyInfos);
-
 		initNew(groovyInfos);
 
 		GroovyInnerCache.put2map(groovyInfos);
 
-//		Console.log(JSONUtil.toJsonStr(GroovyInnerCache.getBeanNameMap()));
-
-//		loadBeanDefinitions(config);
-
 		refreshMapping(groovyScripts);
 	}
+	
 
 	public void refresh() {
 
@@ -214,8 +201,6 @@ public class GroovyDynamicLoader implements ApplicationContextAware, Initializin
 		addConfiguration(config, groovyInfos);
 
 		GroovyInnerCache.put2map(groovyInfos);
-
-//		Console.log(JSONUtil.toJsonStr(GroovyInnerCache.getBeanNameMap()));
 
 		loadBeanDefinitions(config);
 
@@ -253,7 +238,7 @@ public class GroovyDynamicLoader implements ApplicationContextAware, Initializin
 				groovyClassLoader.parseClass(groovyInfo.getGroovyContent());
 			} catch (Exception e) {
 				e.printStackTrace();
-				Console.log("解析Groovy源码失败！");
+				log.error("解析Groovy源码失败！");
 			}
 			DynamicBean bean = new DynamicBean();
 			String scriptName = groovyInfo.getClassName();

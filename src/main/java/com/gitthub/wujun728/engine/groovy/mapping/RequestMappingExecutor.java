@@ -50,12 +50,13 @@ import com.gitthub.wujun728.engine.groovy.cache.IApiConfigCache;
 import com.gitthub.wujun728.engine.plugin.CachePlugin;
 import com.gitthub.wujun728.engine.plugin.PluginManager;
 import com.gitthub.wujun728.engine.plugin.TransformPlugin;
+import com.gitthub.wujun728.engine.util.BeanCopyUtil;
 import com.gitthub.wujun728.engine.util.JdbcUtil;
 import com.gitthub.wujun728.engine.util.PoolManager;
 import com.google.common.collect.Lists;
 
-import cn.hutool.core.bean.BeanUtil;
-import cn.hutool.core.lang.Console;
+//import cn.hutool.core.bean.BeanUtil;
+//import cn.hutool.core.lang.Console;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 
@@ -144,7 +145,7 @@ public class RequestMappingExecutor implements ApplicationListener<ContextRefres
 		ApiConfig config = apiInfoCache.get(path);
 		if (config == null) {
 			response.setStatus(HttpServletResponse.SC_NOT_FOUND);
-			Console.log("servlet execute");
+			log.info("servlet execute");
 			return DataResult.fail("Api not exists");
 		}
 		try {
@@ -159,7 +160,7 @@ public class RequestMappingExecutor implements ApplicationListener<ContextRefres
 				return DataResult.fail("Request parameter is not exists(请求入参不能为空)!");
 			}
 			ApiDataSource ds = new ApiDataSource();
-			BeanUtil.copyProperties(datasource,ds, false);
+			BeanCopyUtil.copyField(datasource,ds);
 			DruidPooledConnection connection = PoolManager.getPooledConnection(ds);
 			// 是否开启事务
 			boolean flag = config.getOpenTrans() == 1 ? true : false;
@@ -187,7 +188,7 @@ public class RequestMappingExecutor implements ApplicationListener<ContextRefres
 			if (StringUtils.isNoneBlank(config.getCachePlugin())) {
 				CachePlugin cachePlugin = (CachePlugin) PluginManager.getPlugin(config.getCachePlugin());
 				ApiConfig apiConfig = new ApiConfig();
-				BeanUtil.copyProperties(config,apiConfig, false);
+				BeanCopyUtil.copyField(datasource, apiConfig);
 				cachePlugin.set(apiConfig, sqlParam, res);
 			}
 			return DataResult.success(res);

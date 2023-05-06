@@ -7,14 +7,6 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 
-/**
- * 版权所有：中信银行软件开发中心
- * 系统名称：SVOP(服务编排平台)
- * 描   述：Bean属性复制工具类
- * 创建时间：2022-03-01 10:54:08
- * 作   者：Wujun
- * 版   本：V1.0.0
- */
 @Slf4j
 public class BeanCopyUtil {
 

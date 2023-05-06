@@ -21,8 +21,8 @@ import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandl
 
 import com.gitthub.wujun728.engine.common.ApiConfig;
 
-import cn.hutool.core.lang.Console;
-import cn.hutool.core.util.StrUtil;
+//import cn.hutool.core.lang.Console;
+//import cn.hutool.core.util.StrUtil;
 import lombok.extern.slf4j.Slf4j;
 
 @Service
@@ -116,7 +116,7 @@ public class RequestMappingService implements InitializingBean {
 		}
 
 		log.debug("Mapped [{}]{}", apiInfo.getMethod(), pattern);
-		if(StrUtil.isNotEmpty(apiInfo.getMethod())) {
+		if(!StringUtils.isEmpty(apiInfo.getMethod())) {
 			mappingInfo = RequestMappingInfo.paths(pattern).methods(RequestMethod.valueOf(apiInfo.getMethod())).build();
 		}else {
 			mappingInfo = RequestMappingInfo.paths(pattern).build();
@@ -147,7 +147,7 @@ public class RequestMappingService implements InitializingBean {
 		}
 
 		log.info("Cancel Mapping [{}]{}", apiInfo.getMethod(), pattern);
-		if(StrUtil.isNotEmpty(apiInfo.getMethod())) {
+		if(!StringUtils.isEmpty(apiInfo.getMethod())) {
 			mappingInfo = RequestMappingInfo.paths(pattern).methods(RequestMethod.valueOf(apiInfo.getMethod())).build();
 		}else {
 			mappingInfo = RequestMappingInfo.paths(pattern).build();
@@ -191,7 +191,7 @@ public class RequestMappingService implements InitializingBean {
 
 	@Override
 	public void afterPropertiesSet() throws Exception {
-		Console.log(" RequestMappingService is init .... ");
+		log.info(" RequestMappingService is init .... ");
 	}
 
 	public static Set<String> getPatterns(RequestMappingInfo info) {

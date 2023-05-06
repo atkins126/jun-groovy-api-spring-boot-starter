@@ -8,9 +8,10 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.springframework.stereotype.Component;
 
 import com.gitthub.wujun728.engine.common.ApiConfig;
+import com.gitthub.wujun728.engine.util.IdUtil;
 
-import cn.hutool.core.util.IdUtil;
-import cn.hutool.core.util.StrUtil;
+//import cn.hutool.core.util.IdUtil;
+//import cn.hutool.core.util.StrUtil;
 
 /**
  * API信息缓存
@@ -20,7 +21,7 @@ public class DefaultApiConfigCache implements IApiConfigCache {
 
     private Map<String, ApiConfig> cacheApiConfig = new ConcurrentHashMap<>();
 
-    private String instanceId = IdUtil.fastSimpleUUID();
+    private String instanceId = IdUtil.generateUUID();
 
     @Override
     public ApiConfig get(ApiConfig apiInfo){

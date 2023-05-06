@@ -28,9 +28,9 @@ import com.gitthub.wujun728.engine.util.FieldUtils;
 import com.gitthub.wujun728.engine.util.JdbcUtil;
 import com.google.common.collect.Lists;
 
-import cn.hutool.core.bean.BeanUtil;
-import cn.hutool.core.bean.copier.CopyOptions;
-import cn.hutool.db.Db;
+//import cn.hutool.core.bean.BeanUtil;
+//import cn.hutool.core.bean.copier.CopyOptions;
+//import cn.hutool.db.Db;
 import lombok.extern.slf4j.Slf4j;
 
 @Service
