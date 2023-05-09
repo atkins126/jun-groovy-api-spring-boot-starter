@@ -146,7 +146,7 @@ public class RequestMappingService implements InitializingBean {
 			return;
 		}
 
-		log.info("Cancel Mapping [{}]{}", apiInfo.getMethod(), pattern);
+		log.info("Cancel Mapping [{}]{}", apiInfo.getMethod()==null?"":apiInfo.getMethod(), pattern);
 		if(!StringUtils.isEmpty(apiInfo.getMethod())) {
 			mappingInfo = RequestMappingInfo.paths(pattern).methods(RequestMethod.valueOf(apiInfo.getMethod())).build();
 		}else {

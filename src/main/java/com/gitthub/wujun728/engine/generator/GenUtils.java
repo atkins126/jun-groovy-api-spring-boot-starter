@@ -10,6 +10,7 @@ import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -21,12 +22,16 @@ import java.util.Properties;
 import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.util.CollectionUtils;
 
+import com.gitthub.wujun728.engine.util.IdUtil;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
 import cn.hutool.core.util.ArrayUtil;
 import freemarker.cache.ClassTemplateLoader;
+import freemarker.cache.StringTemplateLoader;
+import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
 import freemarker.template.TemplateExceptionHandler;
@@ -45,8 +50,9 @@ public class GenUtils {
 	public static final String PROJECT_PATH = System.getProperty("user.dir");// 项目在硬盘上的基础路径，项目路径
 	public static final String JAVA_PATH = "/src/main/java"; // java文件路径
 	public static final String RESOURCES_PATH = "/src/main/resources";// 资源文件路径
-	public static final String TEMPLATE_FILE_PATH = PROJECT_PATH + "/src/main/resources/templates";// 模板位置
-	public static String PACKAGE = "com.bjc.lcp.app";// 资源文件路径
+	public static final String TEMPLATE_PATH = PROJECT_PATH + "/src/main/resources";// 模板位置
+	public static final String TEMPLATE_FILE_PATH = TEMPLATE_PATH + "/templates";// 模板位置
+	public static String PACKAGE = "com.jun.plugin.biz";// 资源文件路径
 	public static String CONFIG = "config.properties";// 资源文件路径
 	public static Boolean isDefaultTemplate = true;// 资源文件路径
 
@@ -61,7 +67,7 @@ public class GenUtils {
 	}
 
 	static {
-		PACKAGE = GenUtils.props.getProperty("basePackage");
+		PACKAGE = GenUtils.props.getProperty("packageName");
 	}
 
 	public static Properties getProperties(String fileName) {
@@ -91,14 +97,17 @@ public class GenUtils {
 		classInfos.forEach(classInfo -> {
 			Map<String, Object> datas = new HashMap<String, Object>();
 			datas.put("classInfo", classInfo);
-//			datas.putAll(GenUtils.getPackages());
-			datas.put("authorName", "wujun");
-			datas.put("isLombok", true);
-			datas.put("isAutoImport", true);
-			datas.put("isWithPackage", true);
-			datas.put("isSwagger", true);
-			datas.put("isComment", true);
-			datas.put("packageName", GenUtils.PACKAGE);
+			Set<Object> keySet = props.keySet();
+			for (Object key : keySet) {
+				System.out.println(key + ": " + props.get(key));
+				if(props.get(key).toString().equalsIgnoreCase("true")) {
+					datas.put(String.valueOf(key), true);
+				}else if(props.get(key).toString().equalsIgnoreCase("false")) {
+					datas.put(String.valueOf(key), false);
+				}else {
+					datas.put(String.valueOf(key), props.get(key));
+				}
+			}
 			Map<String, String> result = new HashMap<String, String>();
 			try {
 				// GenUtils.processTemplatesStringWriter(datas, result);
@@ -118,6 +127,24 @@ public class GenUtils {
 			log.info("生成代码行数：{}", lineNum);
 		});
 
+	}
+	
+	public static Map<String, Object> getTableData(String table, Connection conn) {
+		List<ClassInfo> classInfos = GenUtils.getClassInfo(new String[]{table},conn);
+		Map<String, Object> datas = new HashMap<String, Object>();
+		datas.put("classInfo", classInfos.get(0));
+		Set<Object> keySet = props.keySet();
+		for (Object key : keySet) {
+			//System.out.println(key + ": " + props.get(key));
+			if(props.get(key).toString().equalsIgnoreCase("true")) {
+				datas.put(String.valueOf(key), true);
+			}else if(props.get(key).toString().equalsIgnoreCase("false")) {
+				datas.put(String.valueOf(key), false);
+			}else {
+				datas.put(String.valueOf(key), props.get(key));
+			}
+		}
+		return datas;
 	}
 
 	public static List<String> getFilePaths(ClassInfo classInfo) {
@@ -226,7 +253,8 @@ public class GenUtils {
 	}
 
 	public static String replaceRow(String str) {
-		str = str.toLowerCase().replaceFirst("tab_", "").replaceFirst("tb_", "").replaceFirst("t_", "").replaceFirst("T_", "");
+		str = str.toLowerCase().replaceFirst("tab_", "").replaceFirst("tb_", "").replaceFirst("t_", "")
+				.replaceFirst("T_", "");
 		for (String x : props.getProperty("rowRemovePrefixes").split(",")) {
 			str = str.replaceFirst(x.toLowerCase(), "");
 		}
@@ -352,24 +380,33 @@ public class GenUtils {
 		return getClassInfo(tables, null);
 	}
 
+	@SuppressWarnings("unchecked")
 	public static List<ClassInfo> getClassInfo(String[] tables, Connection conn) {
 		List<ClassInfo> list = new ArrayList<ClassInfo>();
 		try {
 			if (conn == null) {
 				conn = DriverManager.getConnection(GenUtils.props.getProperty("url"),
-						GenUtils.props.getProperty("uname"), GenUtils.props.getProperty("pwd"));
+						GenUtils.props.getProperty("username"), GenUtils.props.getProperty("password"));
 			}
 			DatabaseMetaData metaData = conn.getMetaData();
 			String databaseType = metaData.getDatabaseProductName(); // 获取数据库类型：MySQL
 			// 针对MySQL数据库进行相关生成操作
 			if (databaseType.equals("MySQL")) {
+				// 获取所有表结构
 				ResultSet tableResultSet = metaData.getTables(conn.getCatalog(), conn.getSchema() /* "%" */, "%",
-						new String[] { "TABLE" }); // 获取所有表结构
-				String database = conn.getCatalog(); // 获取数据库名字
-				while (tableResultSet.next()) { // 循环所有表信息
+						new String[] { "TABLE" }); 
+				// 获取数据库名字
+				String database = conn.getCatalog(); 
+				while (tableResultSet.next()) { 
+					// 循环所有表信息
 					String tableName = tableResultSet.getString("TABLE_NAME"); // 获取表名
 					if (tables == null || ArrayUtil.containsIgnoreCase(tables, tableName)) {
-						List<Map<String, String>> pkList = getPrimaryKeysInfo(metaData, tableName);
+						/**判断字段是否自增*/
+				        String sql = "select * from " + tableName + " where 1=2";
+				        ResultSet rst = conn.prepareStatement(sql).executeQuery();
+				        ResultSetMetaData rsmd = rst.getMetaData();
+				        int i=1;
+						List<String> pkList = getPrimaryKeysInfo(metaData, tableName);
 						String table = GenUtils.replace_(GenUtils.replaceTabblePreStr(tableName)); // 名字操作,去掉tab_,tb_，去掉_并转驼峰
 						String Table = GenUtils.firstUpper(table); // 获取表名,首字母大写
 						String tableComment = tableResultSet.getString("REMARKS"); // 获取表备注
@@ -378,31 +415,33 @@ public class GenUtils {
 //						showTableInfo(tableResultSet); 
 						log.info("当前表名：" + tableName);
 						Set<String> typeSet = new HashSet<String>(); // 所有需要导包的类型
-						ResultSet cloumnsSet = metaData.getColumns(database, GenUtils.props.getProperty("uname"),
+						ResultSet cloumnsSet = metaData.getColumns(database, GenUtils.props.getProperty("username"),
 								tableName, null); // 获取表所有的列
-						ResultSet keySet = metaData.getPrimaryKeys(database, GenUtils.props.getProperty("uname"),
-								tableName); // 获取主键
-						String key = "", keyType = "";
-						while (keySet.next()) {
-							key = keySet.getString(4);
-						}
+//						ResultSet keySet = metaData.getPrimaryKeys(database, GenUtils.props.getProperty("username"),
+//								tableName); // 获取主键
+//						String key = "", keyType = "";
+//						while (keySet.next()) {
+//							key = keySet.getString(4);
+//						}
 						// V1 初始化数据及对象 模板V1 field List
 						List<FieldInfo> fieldList = new ArrayList<FieldInfo>();
+						List<FieldInfo> pkfieldList = new ArrayList<FieldInfo>();
 						while (cloumnsSet.next()) {
 							String remarks = cloumnsSet.getString("REMARKS");// 列的描述
 							String columnName = cloumnsSet.getString("COLUMN_NAME"); // 获取列名
 							String javaType = GenUtils.getType(cloumnsSet.getInt("DATA_TYPE"));// 获取类型，并转成JavaType
+							String typeName = cloumnsSet.getString("TYPE_NAME"); // 
 							int COLUMN_SIZE = cloumnsSet.getInt("COLUMN_SIZE");// 获取
-							String TABLE_SCHEM = cloumnsSet.getString("TABLE_SCHEM");// 获取
-							String COLUMN_DEF = cloumnsSet.getString("COLUMN_DEF");// 获取
+							//String TABLE_SCHEM = cloumnsSet.getString("TABLE_SCHEM");// 获取
+							//String COLUMN_DEF = cloumnsSet.getString("COLUMN_DEF");// 获取
 							int NULLABLE = cloumnsSet.getInt("NULLABLE");// 获取
-							//int DATA_TYPE = cloumnsSet.getInt("DATA_TYPE");// 获取
+							// int DATA_TYPE = cloumnsSet.getInt("DATA_TYPE");// 获取
+				            String defaultValue = cloumnsSet.getString("COLUMN_DEF");//字段默认值
 							// showColumnInfo(cloumnsSet);
 							String propertyName = GenUtils.replace_(GenUtils.replaceRow(columnName));// 处理列名，驼峰
 							typeSet.add(javaType);// 需要导包的类型
 							Boolean isPk = false;
-							if (columnName.equals(key)) {
-								keyType = GenUtils.simpleName(javaType);// 主键类型,单主键支持
+							if (!CollectionUtils.isEmpty(pkList) && pkList.contains(columnName)) {
 								isPk = true;
 							}
 							// V1 初始化数据及对象
@@ -412,11 +451,18 @@ public class GenUtils {
 							fieldInfo.setFieldClass(GenUtils.simpleName(javaType));
 							fieldInfo.setFieldComment(remarks);
 							fieldInfo.setColumnSize(COLUMN_SIZE);
-							fieldInfo.setNullable(NULLABLE == 0);
+							fieldInfo.setNotNull(NULLABLE == 0);
 							fieldInfo.setFieldType(javaType);
-							fieldInfo.setColumnType(javaType);
+							fieldInfo.setColumnType(typeName);
 							fieldInfo.setIsPrimaryKey(isPk);
+							fieldInfo.setDefaultValue(defaultValue);
+							boolean isAutoIncrement = rsmd.isAutoIncrement(i); //自增
+							fieldInfo.setAutoIncrement(isAutoIncrement);
 							fieldList.add(fieldInfo);
+							if(isPk) {
+								pkfieldList.add(fieldInfo);
+							}
+							 i++;
 						}
 						// ************************************************************************
 						if (fieldList != null && fieldList.size() > 0) {
@@ -425,6 +471,7 @@ public class GenUtils {
 							classInfo.setClassName(classNameFirstUpper);
 							classInfo.setClassComment(tableComment);
 							classInfo.setFieldList(fieldList);
+							classInfo.setPkfieldList(pkfieldList);
 							classInfo.setPkSize(pkList.size());
 							list.add(classInfo);
 						}
@@ -438,9 +485,14 @@ public class GenUtils {
 		return list;
 	}
 
+	private static void Map(Map<String, String> item) {
+		// TODO Auto-generated method stub
+		
+	}
+
 	// 获取表主键信息
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public static List getPrimaryKeysInfo(DatabaseMetaData dbmd, String tablename) {
+	public static List<String> getPrimaryKeysInfo(DatabaseMetaData dbmd, String tablename) {
 		List pkList = Lists.newArrayList();
 		ResultSet rs = null;
 		try {
@@ -452,11 +504,11 @@ public class GenUtils {
 				String columnName = rs.getString("COLUMN_NAME");// 列名
 				short keySeq = rs.getShort("KEY_SEQ");// 序列号(主键内值1表示第一列的主键，值2代表主键内的第二列)
 				String pkName = rs.getString("PK_NAME"); // 主键名称
-				Map m = Maps.newHashMap();
-				m.put("COLUMN_NAME", columnName);
-				m.put("KEY_SEQ", keySeq);
-				m.put("PK_NAME", pkName);
-				pkList.add(m);
+//				Map m = Maps.newHashMap();
+//				m.put("COLUMN_NAME", columnName);
+//				m.put("KEY_SEQ", keySeq);
+//				m.put("PK_NAME", pkName);
+				pkList.add(columnName);
 				System.out.println(tableCat + " - " + tableSchemaName + " - " + tableName + " - " + columnName + " - "
 						+ keySeq + " - " + pkName);
 			}
@@ -471,6 +523,7 @@ public class GenUtils {
 	/***
 	 * 构建 Java文件，遍历文件夹下所有的模板，然后生成对应的文件（需要配置模板的package及path）
 	 */
+	@Deprecated
 	public static void batchBuilderByDirectory1111(Map<String, Object> modelMap) {
 		List<Map<String, Object>> srcFiles = new ArrayList<Map<String, Object>>();
 		String TEMPLATE_PATH = GenUtils.class.getClassLoader().getResource("").getPath().replace("/target/classes/", "")
@@ -505,11 +558,11 @@ public class GenUtils {
 					String path = null;
 					if (templateFileNameSuffix.equalsIgnoreCase(".java")) {
 						// 创建文件夹
-						path = GenUtils.PROJECT_PATH + "/" + props.getProperty("basePackage").replace(".", "/") + "/"
+						path = GenUtils.PROJECT_PATH + "/" + props.getProperty("packageName").replace(".", "/") + "/"
 								+ templateFileNamePrefix.toLowerCase();
 					}
 					if (templateFileNameSuffix.equalsIgnoreCase(".ftl")) {
-						path = GenUtils.PROJECT_PATH + "/" + props.getProperty("basePackage").replace(".", "/") + "/"
+						path = GenUtils.PROJECT_PATH + "/" + props.getProperty("packageName").replace(".", "/") + "/"
 								+ templateFilePathMiddle + "/";
 					}
 					String fileNameNew = templateFileNamePrefix
@@ -526,6 +579,7 @@ public class GenUtils {
 		}
 	}
 
+	@Deprecated
 	public static void showTableInfo1111(ResultSet tableResultSet) throws SQLException {
 		System.out.println(tableResultSet.getString("TABLE_CAT"));
 		System.out.println(tableResultSet.getString("TABLE_SCHEM"));
@@ -534,6 +588,7 @@ public class GenUtils {
 		System.out.println(tableResultSet.getString("REMARKS"));
 	}
 
+	@Deprecated
 	public static void showColumnInfo1111(ResultSet cloumnsSet) throws SQLException {
 		System.out.println("TABLE_CAT is :" + cloumnsSet.getString("TABLE_CAT"));
 		System.out.println("TABLE_SCHEM is :" + cloumnsSet.getString("TABLE_SCHEM"));
@@ -553,6 +608,30 @@ public class GenUtils {
 		System.out.println("CHAR_OCTET_LENGTH is :" + cloumnsSet.getInt("CHAR_OCTET_LENGTH"));
 		System.out.println("ORDINAL_POSITION is :" + cloumnsSet.getInt("ORDINAL_POSITION"));
 		System.out.println("IS_NULLABLE is :" + cloumnsSet.getString("IS_NULLABLE"));
+	}
+	
+	public static String genTemplateStr(HashMap<String, Object> data, String stringTemplateContent)
+			throws IOException, TemplateException {
+		return genTemplateStr(data, IdUtil.generateUUID(), stringTemplateContent);
+	}
+	public static String genTemplateStr(HashMap<String, Object> data, String templateName, String stringTemplateContent)
+				throws IOException, TemplateException {
+		Configuration configuration = getStringConfiguration();
+
+		Template template = new Template(templateName, stringTemplateContent, configuration);;
+
+		StringWriter writer = new StringWriter();
+		template.process(data, writer);
+
+		System.err.println(writer.toString());
+		return writer.toString();
+	}
+
+	private static Configuration getStringConfiguration() {
+		Configuration configuration = new Configuration(Configuration.VERSION_2_3_29);
+		configuration.setTemplateLoader(new StringTemplateLoader());
+		configuration.setDefaultEncoding("utf-8");
+		return configuration;
 	}
 
 }

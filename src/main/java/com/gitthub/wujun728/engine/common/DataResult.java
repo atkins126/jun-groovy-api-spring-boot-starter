@@ -29,7 +29,7 @@ public class DataResult {
     @JSONField(serializeFeatures = {JSONWriter.Feature.WriteMapNullValue})
     private Object data;
     
-    boolean success;
+//    boolean success;
  
 
     public DataResult(int code, Object data) {

@@ -2,9 +2,12 @@ package com.gitthub.wujun728.engine.generator;
 
 import java.util.List;
 
+import lombok.Data;
+
 /**
  * class info
  */
+@Data
 public class ClassInfo {
 
     private String tableName;
@@ -13,45 +16,7 @@ public class ClassInfo {
 	private int pkSize;
 
 	private List<FieldInfo> fieldList;
+	private List<FieldInfo> pkfieldList;
 
-	public String getTableName() {
-		return tableName;
-	}
-
-	public void setTableName(String tableName) {
-		this.tableName = tableName;
-	}
-
-	public String getClassName() {
-		return className;
-	}
-
-	public void setClassName(String className) {
-		this.className = className;
-	}
-
-	public String getClassComment() {
-		return classComment;
-	}
-
-	public void setClassComment(String classComment) {
-		this.classComment = classComment;
-	}
-
-	public List<FieldInfo> getFieldList() {
-		return fieldList;
-	}
-
-	public void setFieldList(List<FieldInfo> fieldList) {
-		this.fieldList = fieldList;
-	}
-
-	public int getPkSize() {
-		return pkSize;
-	}
-
-	public void setPkSize(int pkSize) {
-		this.pkSize = pkSize;
-	}
 
 }

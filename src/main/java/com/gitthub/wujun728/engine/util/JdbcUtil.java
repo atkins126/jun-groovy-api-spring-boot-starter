@@ -1,5 +1,6 @@
 package com.gitthub.wujun728.engine.util;
 
+import com.alibaba.druid.DbType;
 import com.alibaba.druid.pool.DruidPooledConnection;
 import com.alibaba.druid.util.JdbcConstants;
 import com.alibaba.fastjson2.JSON;
@@ -221,16 +222,16 @@ public class JdbcUtil {
     public static Connection getConnectionByDBType(ApiDataSource ds) throws SQLException, ClassNotFoundException {
         String url = ds.getUrl();
         switch (ds.getType()) {
-            case JdbcConstants.MYSQL:
+            case "mysql":
                 Class.forName("com.mysql.jdbc.Driver");
                 break;
-            case JdbcConstants.POSTGRESQL:
+            case "postgresql":
                 Class.forName("org.postgresql.Driver");
                 break;
-            case JdbcConstants.HIVE:
+            case "hive":
                 Class.forName("org.apache.hive.jdbc.HiveDriver");
                 break;
-            case JdbcConstants.SQL_SERVER:
+            case "sqlserver":
                 Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
                 break;
             default:

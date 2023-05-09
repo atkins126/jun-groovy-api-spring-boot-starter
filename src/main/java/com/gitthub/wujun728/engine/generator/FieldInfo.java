@@ -1,8 +1,11 @@
 package com.gitthub.wujun728.engine.generator;
 
+import lombok.Data;
+
 /**
  * field info
  */
+@Data
 public class FieldInfo {
 
     private String columnName;
@@ -13,90 +16,27 @@ public class FieldInfo {
     private String fieldComment;
     private Boolean isPrimaryKey;
     private int columnSize;
-    private Boolean nullable;
     private Boolean comment;
+    /**
+     * 自增标识
+     */
+    private boolean isAutoIncrement;
+    /**
+     * 是否为空
+     */
+    private Boolean notNull;
 
-    public String getColumnName() {
-        return columnName;
-    }
-
-    public void setColumnName(String columnName) {
-        this.columnName = columnName;
-    }
-
-    public String getFieldName() {
-        return fieldName;
-    }
-
-    public void setFieldName(String fieldName) {
-        this.fieldName = fieldName;
-    }
-
-    public String getFieldClass() {
-        return fieldClass;
-    }
-
-    public void setFieldClass(String fieldClass) {
-        this.fieldClass = fieldClass;
-    }
-
-    public String getFieldComment() {
-        return fieldComment;
-    }
-
-    public void setFieldComment(String fieldComment) {
-        this.fieldComment = fieldComment;
-    }
-
-	public Boolean getIsPrimaryKey() {
-		return isPrimaryKey;
-	}
-
-	public void setIsPrimaryKey(Boolean isPrimaryKey) {
-		this.isPrimaryKey = isPrimaryKey;
-	}
-
-	public int getColumnSize() {
-		return columnSize;
-	}
-
-	public void setColumnSize(int columnSize) {
-		this.columnSize = columnSize;
-	}
-
-	public Boolean getNullable() {
-		return nullable;
-	}
-
-	public void setNullable(Boolean nullable) {
-		this.nullable = nullable;
-	}
-
-	public Boolean getComment() {
-		return comment;
-	}
-
-	public void setComment(Boolean comment) {
-		this.comment = comment;
-	}
-
-	public String getColumnType() {
-		return columnType;
-	}
-
-	public void setColumnType(String columnType) {
-		this.columnType = columnType;
-	}
-
-	public String getFieldType() {
-		return fieldType;
-	}
-
-	public void setFieldType(String fieldType) {
-		this.fieldType = fieldType;
-	}
-	
-	
-
-
+    /**
+     * 默认值
+     */
+    private String defaultValue;
+    /**
+     * 精度
+     */
+    private int precision;
+    /**
+     * 小数位数
+     */
+    private int scale;
+    
 }

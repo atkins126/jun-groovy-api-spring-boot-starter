@@ -118,7 +118,7 @@ public class GroovyDynamicLoader implements ApplicationContextAware, Initializin
 			}catch (Exception e) {
 				log.error("当前Groovy脚本执行失败："+JSON.toJSONString(groovyInfo));
 			}
-			log.info("当前groovyInfo加载成功,className-{},interfaceId-{},beanName-{},BeanType-{}：",groovyInfo.getClassName(),groovyInfo.getInterfaceId(),groovyInfo.getBeanName(),groovyInfo.getBeanType());
+			log.info("当前groovyInfo加载完成,className-{},interfaceId-{},beanName-{},BeanType-{}：",groovyInfo.getClassName(),groovyInfo.getInterfaceId(),groovyInfo.getBeanName(),groovyInfo.getBeanType());
 		}
 
 		GroovyInnerCache.put2map(groovyInfos);
