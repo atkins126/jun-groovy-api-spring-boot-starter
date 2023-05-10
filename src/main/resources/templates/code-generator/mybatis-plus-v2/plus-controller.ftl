@@ -58,7 +58,7 @@ public class ${classInfo.className}Controller {
     	BeanUtils.copyProperties(vo, dto);
 <#if classInfo.fieldList?exists && classInfo.fieldList?size gt 0>
 <#list classInfo.fieldList as fieldItem >
-<#if fieldItem.nullable==true>
+<#if fieldItem.notNull==true>
         if (ObjectUtils.isEmpty(dto.get${fieldItem.fieldName?cap_first}())) {
             return DataResult.fail("参数[${fieldItem.fieldName}]不能为空");
         }

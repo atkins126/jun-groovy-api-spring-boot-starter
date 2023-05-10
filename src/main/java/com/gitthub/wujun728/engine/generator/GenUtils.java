@@ -99,7 +99,7 @@ public class GenUtils {
 			datas.put("classInfo", classInfo);
 			Set<Object> keySet = props.keySet();
 			for (Object key : keySet) {
-				System.out.println(key + ": " + props.get(key));
+				//System.out.println(key + ": " + props.get(key));
 				if(props.get(key).toString().equalsIgnoreCase("true")) {
 					datas.put(String.valueOf(key), true);
 				}else if(props.get(key).toString().equalsIgnoreCase("false")) {

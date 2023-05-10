@@ -37,8 +37,8 @@ public class ${classInfo.className}VO  extends BaseEntity  implements Serializab
     * ${fieldItem.fieldComment}
     */</#if><#if isSwagger?exists && isSwagger==true>
     @ApiModelProperty("${fieldItem.fieldComment}")</#if> 
-    <#if fieldItem.nullable==true>@NotNull(message = "${fieldItem.fieldComment}不能为空", groups = {Create.class,Update.class,Delete.class})</#if>
-    <#if fieldItem.nullable==true>@Size( max = ${fieldItem.columnSize},message = "${fieldItem.fieldComment}长度限制${fieldItem.columnSize}位")</#if>
+    <#if fieldItem.notNull==true>@NotNull(message = "${fieldItem.fieldComment}不能为空", groups = {Create.class,Update.class})</#if>
+    <#if fieldItem.notNull==true>@Size( max = ${fieldItem.columnSize?c},message = "${fieldItem.fieldComment}长度限制${fieldItem.columnSize?c}位")</#if>
     private ${fieldItem.fieldClass} ${fieldItem.fieldName};
 
 <#if isLombok?exists && isLombok==false>
