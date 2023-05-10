@@ -6,7 +6,7 @@
 
 	<groupId>io.github.wujun728</groupId>
 	<artifactId>jun-groovy-api-spring-boot-starter</artifactId>
-	<version>1.0.0-releases</version>
+	<version>1.0.0-RELEASE</version>
 	<name>groovy_api_starter</name>
 	<description>groovy_api_starter</description>
 	<url>https://github.com/wujun728/jun-groovy-api-spring-boot-starter</url>
@@ -21,6 +21,7 @@
 
 	<properties>
 		<java.version>1.8</java.version>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 
 	<dependencies>
