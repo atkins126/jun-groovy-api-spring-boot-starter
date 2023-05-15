@@ -8,14 +8,14 @@ import org.apache.commons.io.FileUtils;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.ResourceUtils;
 
-import com.github.freakchick.orange.SqlMeta;
-import com.github.freakchick.orange.engine.DynamicSqlEngine;
-import com.gitthub.wujun728.engine.common.DataResult;
 import com.gitthub.wujun728.engine.common.ApiDataSource;
+import com.gitthub.wujun728.engine.common.DataResult;
 import com.gitthub.wujun728.engine.common.Sql;
 import com.gitthub.wujun728.engine.config.ApiPorperties;
 import com.gitthub.wujun728.engine.util.JdbcUtil;
 import com.gitthub.wujun728.engine.util.XmlParser;
+import com.gitthub.wujun728.mybatis.sql.SqlMeta;
+import com.gitthub.wujun728.mybatis.sql.engine.DynamicSqlEngine;
 import com.google.common.collect.Maps;
 
 import lombok.extern.slf4j.Slf4j;

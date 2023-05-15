@@ -100,10 +100,11 @@
 		    <version>31.1-jre</version>
 		</dependency>
 		<dependency>
-			<groupId>io.github.freakchick</groupId>
-			<artifactId>orange</artifactId>
-			<version>1.0</version>
+		    <groupId>io.github.wujun728</groupId>
+		    <artifactId>jun-mybatis-sql-engine</artifactId>
+		    <version>1.0.0-RELEASE</version>
 		</dependency>
+		
         <!-- https://mvnrepository.com/artifact/cglib/cglib-nodep -->
         <dependency>
             <groupId>cglib</groupId>
@@ -202,7 +203,7 @@
 				</executions>
 			</plugin>
 			<!-- GPG -->
-			<plugin>
+			<!-- <plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-gpg-plugin</artifactId>
 				<version>1.6</version>
@@ -214,7 +215,7 @@
 						</goals>
 					</execution>
 				</executions>
-			</plugin>
+			</plugin> -->
 			<!--Compiler -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>

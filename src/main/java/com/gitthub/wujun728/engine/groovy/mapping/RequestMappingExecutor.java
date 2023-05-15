@@ -3,7 +3,6 @@ package com.gitthub.wujun728.engine.groovy.mapping;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
-import java.io.UnsupportedEncodingException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.sql.Connection;
@@ -41,7 +40,6 @@ import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONObject;
 import com.alibaba.fastjson2.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.github.freakchick.orange.SqlMeta;
 import com.gitthub.wujun728.engine.common.ApiConfig;
 import com.gitthub.wujun728.engine.common.ApiDataSource;
 import com.gitthub.wujun728.engine.common.ApiService;
@@ -54,6 +52,7 @@ import com.gitthub.wujun728.engine.plugin.TransformPlugin;
 import com.gitthub.wujun728.engine.util.BeanCopyUtil;
 import com.gitthub.wujun728.engine.util.JdbcUtil;
 import com.gitthub.wujun728.engine.util.PoolManager;
+import com.gitthub.wujun728.mybatis.sql.SqlMeta;
 import com.google.common.collect.Lists;
 
 //import cn.hutool.core.bean.BeanUtil;
@@ -266,13 +265,17 @@ public class RequestMappingExecutor implements ApplicationListener<ContextRefres
 		}
 		// 如果是application/x-www-form-urlencoded请求，先判断接口规定的content-type是不是确实是application/x-www-form-urlencoded
 		else if (contentType.equalsIgnoreCase(MediaType.APPLICATION_FORM_URLENCODED_VALUE)) {
-			if (MediaType.APPLICATION_FORM_URLENCODED_VALUE.equalsIgnoreCase(apiConfig.getContentType())) {
+			if (MediaType.APPLICATION_FORM_URLENCODED_VALUE.equalsIgnoreCase(contentType)) {
+				params = apiService.getSqlParam(request, apiConfig);
+			} else if (MediaType.APPLICATION_FORM_URLENCODED_VALUE.equalsIgnoreCase(apiConfig.getContentType())) {
 				params = apiService.getSqlParam(request, apiConfig);
 			} else {
-				throw new RuntimeException("this API only support content-type: " + apiConfig.getContentType()
+				params = apiService.getSqlParam(request, apiConfig);
+				System.err.println("this API only support content-type: " + apiConfig.getContentType()
 						+ ", but you use: " + contentType);
 			}
 		} else {
+			params = apiService.getSqlParam(request, apiConfig);
 			throw new RuntimeException("content-type not supported: " + contentType);
 		}
 		String uri = request.getRequestURI();
@@ -281,7 +284,7 @@ public class RequestMappingExecutor implements ApplicationListener<ContextRefres
 		Map<String, Object> urivar = this.getParam(request);
 		String pattern = RequestMappingExecutor.buildPattern(request);
 		Map<String, String> pathvar = this.getPathVar(pattern, uri);
-		Map<String, Object> params1 = RequestMappingExecutor.getParams(request);
+		Map<String, Object> params1 = RequestMappingExecutor.getParameters(request);
 		if (!CollectionUtils.isEmpty(session)) {
 			params.putAll(session);
 		}
@@ -297,6 +300,7 @@ public class RequestMappingExecutor implements ApplicationListener<ContextRefres
 		if (!CollectionUtils.isEmpty(params1)) {
 			params.putAll(params1);
 		}
+		params.put("path",apiConfig.getPath());
 		return params;
 	}
 
@@ -384,7 +388,7 @@ public class RequestMappingExecutor implements ApplicationListener<ContextRefres
 		return result;
 	}
 
-	public static Map<String, Object> getParams(HttpServletRequest request) {
+	public static Map<String, Object> getParameters(HttpServletRequest request) {
 		Map<String, Object> map = new HashMap<String, Object>();
 		Enumeration paramNames = request.getParameterNames();
 		while (paramNames.hasMoreElements()) {

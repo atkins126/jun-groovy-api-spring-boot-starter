@@ -4,6 +4,8 @@ import lombok.Data;
 
 import java.util.List;
 
+import com.alibaba.fastjson2.annotation.JSONField;
+
 @Data
 public class ApiConfig {
 	

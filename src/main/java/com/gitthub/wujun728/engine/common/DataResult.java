@@ -106,6 +106,10 @@ public class DataResult {
     	return new DataResult(data,0,"操作成功");
     }
     
+    public static DataResult successWithDataMsg(Object data,String msg) {
+    	return new DataResult(data,0,msg);
+    }
+    
 
 
 }

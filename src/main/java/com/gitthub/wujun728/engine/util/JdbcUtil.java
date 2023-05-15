@@ -1,22 +1,25 @@
 package com.gitthub.wujun728.engine.util;
 
-import com.alibaba.druid.DbType;
-import com.alibaba.druid.pool.DruidPooledConnection;
-import com.alibaba.druid.util.JdbcConstants;
-import com.alibaba.fastjson2.JSON;
-import com.alibaba.fastjson2.JSONObject;
-import com.github.freakchick.orange.engine.DynamicSqlEngine;
-import com.gitthub.wujun728.engine.common.DataResult;
-import com.gitthub.wujun728.engine.common.ApiDataSource;
-
-import lombok.extern.slf4j.Slf4j;
-
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import com.alibaba.druid.pool.DruidPooledConnection;
+import com.alibaba.fastjson2.JSON;
+import com.alibaba.fastjson2.JSONObject;
+import com.gitthub.wujun728.engine.common.ApiDataSource;
+import com.gitthub.wujun728.engine.common.DataResult;
+import com.gitthub.wujun728.mybatis.sql.engine.DynamicSqlEngine;
+
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class JdbcUtil {
