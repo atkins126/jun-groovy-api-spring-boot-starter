@@ -5,7 +5,6 @@ import org.w3c.dom.*;
 import org.xml.sax.SAXException;
 
 import com.gitthub.wujun728.engine.common.ApiDataSource;
-import com.gitthub.wujun728.engine.common.Sql;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;

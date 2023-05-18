@@ -9,6 +9,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.gitthub.wujun728.engine.common.DataResult;
+import com.gitthub.wujun728.engine.groovy.core.bean.GroovyDynamicLoader;
+
+import javax.annotation.Resource;
 import javax.script.*;
 import java.util.HashMap;
 
@@ -18,6 +22,26 @@ import java.util.HashMap;
 public class GroovyScriptController {
     private ScriptEngineManager scriptEngineManager;
     private ApplicationContext applicationContext;
+    
+    @Resource
+	private GroovyDynamicLoader groovyDynamicLoader;
+	
+	@RequestMapping("/test")
+	public int test(int number1, int number2) {
+		return number1 + number2;
+		
+	}
+
+	@RequestMapping("/refresh")
+	public DataResult refresh() {
+		try {
+			groovyDynamicLoader.refreshNew();
+		} catch (Exception e) {
+			DataResult.success("緩存刷新失败！" + e.getMessage());
+			e.printStackTrace();
+		}
+		return DataResult.success("緩存刷新成功");
+	}
 
     @Autowired
     public GroovyScriptController(ScriptEngineManager scriptEngineManager, ApplicationContext applicationContext) {

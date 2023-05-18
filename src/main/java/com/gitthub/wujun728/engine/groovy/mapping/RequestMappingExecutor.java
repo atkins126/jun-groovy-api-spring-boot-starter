@@ -14,6 +14,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -37,11 +38,13 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import com.alibaba.druid.pool.DruidPooledConnection;
 import com.alibaba.fastjson2.JSON;
+import com.alibaba.fastjson2.JSONArray;
 import com.alibaba.fastjson2.JSONObject;
 import com.alibaba.fastjson2.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gitthub.wujun728.engine.common.ApiConfig;
 import com.gitthub.wujun728.engine.common.ApiDataSource;
+import com.gitthub.wujun728.engine.common.ApiProperties;
 import com.gitthub.wujun728.engine.common.ApiService;
 import com.gitthub.wujun728.engine.common.ApiSql;
 import com.gitthub.wujun728.engine.common.DataResult;
@@ -89,7 +92,7 @@ public class RequestMappingExecutor implements ApplicationListener<ContextRefres
 		String content = serverProperties.getServlet().getContextPath() == null ? ""
 				: serverProperties.getServlet().getContextPath();
 		Integer port = serverProperties.getPort() == null ? 8080 : serverProperties.getPort();
-		return "http://localhost:" + port + ("/" + content + apiProperties.getBaseRegisterPath()).replace("//", "/");
+		return "http://localhost:" + port + ("/" + content + apiProperties.getBasePath()).replace("//", "/");
 	}
 
 	/**
@@ -266,16 +269,16 @@ public class RequestMappingExecutor implements ApplicationListener<ContextRefres
 		// 如果是application/x-www-form-urlencoded请求，先判断接口规定的content-type是不是确实是application/x-www-form-urlencoded
 		else if (contentType.equalsIgnoreCase(MediaType.APPLICATION_FORM_URLENCODED_VALUE)) {
 			if (MediaType.APPLICATION_FORM_URLENCODED_VALUE.equalsIgnoreCase(contentType)) {
-				params = apiService.getSqlParam(request, apiConfig);
+				params = getSqlParam(request, apiConfig);
 			} else if (MediaType.APPLICATION_FORM_URLENCODED_VALUE.equalsIgnoreCase(apiConfig.getContentType())) {
-				params = apiService.getSqlParam(request, apiConfig);
+				params = getSqlParam(request, apiConfig);
 			} else {
-				params = apiService.getSqlParam(request, apiConfig);
+				params = getSqlParam(request, apiConfig);
 				System.err.println("this API only support content-type: " + apiConfig.getContentType()
 						+ ", but you use: " + contentType);
 			}
 		} else {
-			params = apiService.getSqlParam(request, apiConfig);
+			params = getSqlParam(request, apiConfig);
 			throw new RuntimeException("content-type not supported: " + contentType);
 		}
 		String uri = request.getRequestURI();
@@ -409,5 +412,69 @@ public class RequestMappingExecutor implements ApplicationListener<ContextRefres
 		log.debug("=============================================================");
 		return map;
 	}
+	
+	
+
+    public Map<String, Object> getSqlParam(HttpServletRequest request, ApiConfig config) {
+        Map<String, Object> map = new HashMap<>();
+
+        JSONArray requestParams = JSON.parseArray(config.getParams());
+        for (int i = 0; i < requestParams.size(); i++) {
+            JSONObject jo = requestParams.getJSONObject(i);
+            String name = jo.getString("name");
+            String type = jo.getString("type");
+
+            //数组类型参数
+            if (type.startsWith("Array")) {
+                String[] values = request.getParameterValues(name);
+                if (values != null) {
+                    List<String> list = Arrays.asList(values);
+                    if (values.length > 0) {
+                        switch (type) {
+                            case "Array<double>":
+                                List<Double> collect = list.stream().map(value -> Double.valueOf(value)).collect(Collectors.toList());
+                                map.put(name, collect);
+                                break;
+                            case "Array<bigint>":
+                                List<Long> longs = list.stream().map(value -> Long.valueOf(value)).collect(Collectors.toList());
+                                map.put(name, longs);
+                                break;
+                            case "Array<string>":
+                            case "Array<date>":
+                                map.put(name, list);
+                                break;
+                        }
+                    } else {
+                        map.put(name, list);
+                    }
+                } else {
+                    map.put(name, null);
+                }
+            } else {
+
+                String value = request.getParameter(name);
+                if (StringUtils.isNotBlank(value)) {
+
+                    switch (type) {
+                        case "double":
+                            Double v = Double.valueOf(value);
+                            map.put(name, v);
+                            break;
+                        case "bigint":
+                            Long longV = Long.valueOf(value);
+                            map.put(name, longV);
+                            break;
+                        case "string":
+                        case "date":
+                            map.put(name, value);
+                            break;
+                    }
+                } else {
+                    map.put(name, value);
+                }
+            }
+        }
+        return map;
+    }
 
 }

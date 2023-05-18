@@ -6,12 +6,12 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import com.gitthub.wujun728.engine.common.ApiProperties;
 import com.gitthub.wujun728.engine.common.ApiService;
 import com.gitthub.wujun728.engine.config.ApiPorperties;
 import com.gitthub.wujun728.engine.groovy.cache.DefaultApiConfigCache;
 import com.gitthub.wujun728.engine.groovy.cache.IApiConfigCache;
 import com.gitthub.wujun728.engine.groovy.core.bean.GroovyDynamicLoader;
-import com.gitthub.wujun728.engine.groovy.mapping.ApiProperties;
 import com.gitthub.wujun728.engine.groovy.mapping.RequestMappingExecutor;
 import com.gitthub.wujun728.engine.groovy.mapping.RequestMappingService;
 import com.gitthub.wujun728.engine.util.JdbcUtil;

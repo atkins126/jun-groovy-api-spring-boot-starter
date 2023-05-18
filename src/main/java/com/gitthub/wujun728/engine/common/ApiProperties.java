@@ -1,4 +1,4 @@
-package com.gitthub.wujun728.engine.groovy.mapping;
+package com.gitthub.wujun728.engine.common;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
@@ -26,29 +26,13 @@ public class ApiProperties {
     /**
      * 基础注册路径
      */
-    private String basePath = "/apibase";
+    private String basePath = "/api";
     
-
-    /**
-     * 基础注册路径
-     */
-    private String baseRegisterPath = "/apibase";
 
     /**
      * 密钥KEY
      */
-    private String secretKey = "123456789";
-
-    /**
-     * post传参 操作整个body部分的key值
-     * 在脚本中执行return bodyRoot;将返回整个body对象
-     */
-    private String bodyRootKey = "bodyRoot";
-
-    /**
-     * 启用编辑管理界面，默认true,生产环境如果访问地址暴露在了外网，建议关闭
-     */
-    private boolean viewEnabled = true;
+//    private String secretKey = "12345687";
 
     /**
      * 驼峰自动转换配置，默认true

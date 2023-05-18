@@ -20,6 +20,7 @@ import org.springframework.web.servlet.mvc.method.RequestMappingInfo;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
 
 import com.gitthub.wujun728.engine.common.ApiConfig;
+import com.gitthub.wujun728.engine.common.ApiProperties;
 
 //import cn.hutool.core.lang.Console;
 //import cn.hutool.core.util.StrUtil;
@@ -56,7 +57,7 @@ public class RequestMappingService implements InitializingBean {
 			for (String path : getPatterns(info)) {
 
 				// 过滤本身的类
-				if (path.indexOf(apiProperties.getBaseRegisterPath()) == 0 || path.equals("/error")) {
+				if (path.indexOf(apiProperties.getBasePath()) == 0 || path.equals("/error")) {
 					continue;
 				}
 
