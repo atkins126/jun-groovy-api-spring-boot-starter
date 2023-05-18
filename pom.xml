@@ -6,7 +6,7 @@
 
 	<groupId>io.github.wujun728</groupId>
 	<artifactId>jun-groovy-api-spring-boot-starter</artifactId>
-	<version>1.0.0-RELEASE</version>
+	<version>1.0.1-RELEASE</version>
 	<name>groovy_api_starter</name>
 	<description>groovy_api_starter</description>
 	<url>https://github.com/wujun728/jun-groovy-api-spring-boot-starter</url>
@@ -203,7 +203,7 @@
 				</executions>
 			</plugin>
 			<!-- GPG -->
-			<!-- <plugin>
+			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-gpg-plugin</artifactId>
 				<version>1.6</version>
@@ -215,7 +215,7 @@
 						</goals>
 					</execution>
 				</executions>
-			</plugin> -->
+			</plugin>
 			<!--Compiler -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
