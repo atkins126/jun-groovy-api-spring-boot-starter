@@ -1,5 +1,6 @@
 package com.gitthub.wujun728.engine.common;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
@@ -21,12 +22,24 @@ public class ApiProperties {
      * 服务名称
      * 所有数据以此作隔离
      */
-    private String serviceName = "engine-api";
+    private String serviceName = "jun-engine-api";
 
     /**
      * 基础注册路径
      */
     private String basePath = "/api";
+    
+    
+    //@Value("${jdbc.url}")
+    private String url;
+    
+    //@Value("${jdbc.username}")
+    private String username;
+    
+    //@Value("${jdbc.password}")
+    private String password;
+    //@Value("${jdbc.password}")
+    private String api_config;
     
 
     /**
