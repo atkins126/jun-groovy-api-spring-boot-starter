@@ -50,10 +50,10 @@ public class GroovyInnerCache {
 				log.warn("found duplication groovy script:" + groovyInfo);
 			}
 			// 缓存 beanNameList
-			if (!beanNameMap.containsKey(groovyInfo.getInterfaceId())) {
-				beanNameMap.put(groovyInfo.getInterfaceId(), groovyInfo.getBeanName());
+			if (!beanNameMap.containsKey(groovyInfo.getPath())) {
+				beanNameMap.put(groovyInfo.getPath(), groovyInfo.getBeanName());
 			} else {
-				log.warn("found duplication interfaceId:" + groovyInfo.getInterfaceId());
+				log.warn("found duplication path:" + groovyInfo.getPath());
 			}
 		}
 	}
@@ -75,7 +75,6 @@ public class GroovyInnerCache {
 
 	/**
 	 * 新增
-	 * 
 	 * @param groovyList
 	 */
 	private static void addMap(List<GroovyInfo> groovyList) {
@@ -86,7 +85,6 @@ public class GroovyInnerCache {
 
 	/**
 	 * 删除
-	 * 
 	 * @param groovyList
 	 */
 	private static void removeMap(List<GroovyInfo> groovyList) {
@@ -97,7 +95,6 @@ public class GroovyInnerCache {
 
 	/**
 	 * 根据名称获取脚本信息
-	 * 
 	 * @param scriptName
 	 * @return
 	 */
@@ -106,19 +103,19 @@ public class GroovyInnerCache {
 	}
 	
 
-	public static String getByInterfaceId(String interfaceId) {
-		return beanNameMap.get(interfaceId);
+	public static String getByPath(String path) {
+		return beanNameMap.get(path);
 	}
 	
-	public static GroovyInfo getGroovyInfoByInterfaceId(String interfaceId) {
-		String beanName = beanNameMap.get(interfaceId);
+	public static GroovyInfo getGroovyInfoByPath(String Path) {
+		String beanName = beanNameMap.get(Path);
 		if(ObjectUtils.isEmpty(beanName)) {
-			log.error("beanname-{} 不能为空 ",beanNameMap.get(interfaceId));
-			log.error("interfaceId-{} 没有注册的Bean ",interfaceId);
+			log.error("beanname-{} 不能为空 ",beanNameMap.get(Path));
+			log.error("Path-{} 没有注册的Bean ",Path);
 		}
-		GroovyInfo info = groovyMap.get(beanNameMap.get(interfaceId));
+		GroovyInfo info = groovyMap.get(beanNameMap.get(Path));
 		if(ObjectUtils.isEmpty(info)) {
-			log.error("interfaceId-{} 不能为空 ",interfaceId);
+			log.error("Path-{} 不能为空 ",Path);
 		}
 		return info;
 	}

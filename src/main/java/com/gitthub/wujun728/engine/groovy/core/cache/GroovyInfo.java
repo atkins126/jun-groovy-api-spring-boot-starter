@@ -21,7 +21,8 @@ public class GroovyInfo {
 	/**
 	 * 接口ID
 	 */
-	private String interfaceId;
+//	private String interfaceId;
+	private String path;
 
 	/**
 	 * BeanName

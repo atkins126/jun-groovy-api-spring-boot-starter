@@ -59,8 +59,8 @@ public class ApiService {
 		// 与 jfinal web 环境唯一的不同是要手动调用一次相关插件的start()方法
 		dp.start();
 		arp.start();
-		if(!StringUtils.isEmpty(properties.getApi_config())) {
-			tablename = properties.getApi_config();
+		if(!StringUtils.isEmpty(properties.getApiconfig())) {
+			tablename = properties.getApiconfig();
 		}
 	}
 

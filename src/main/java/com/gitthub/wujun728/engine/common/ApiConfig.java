@@ -22,7 +22,7 @@ public class ApiConfig {
 
     private String beanName;
     
-    private String interfaceId;
+//    private String interfaceId;
 
     private String datasourceId;
     

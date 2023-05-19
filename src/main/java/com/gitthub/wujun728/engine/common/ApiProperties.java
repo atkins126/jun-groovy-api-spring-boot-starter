@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 /**
  * 配置属性
  */
-@ConfigurationProperties(prefix = "spring.groovy-api")
+//@ConfigurationProperties(prefix = "spring.groovy-api")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -22,24 +22,29 @@ public class ApiProperties {
      * 服务名称
      * 所有数据以此作隔离
      */
-    private String serviceName = "jun-engine-api";
+	@Value("${spring.groovy-api.servicename:jun-engine-api}")
+    private String servicename;
 
     /**
      * 基础注册路径
      */
-    private String basePath = "/api";
+	@Value("${spring.groovy-api.context:/api}")
+    private String context;
     
+    @Value("${spring.groovy-api.datasource.dbtype:}")
+    private String dbtype;
     
-    //@Value("${jdbc.url}")
+    @Value("${spring.groovy-api.datasource.url:}")
     private String url;
     
-    //@Value("${jdbc.username}")
+    @Value("${spring.groovy-api.datasource.username:}")
     private String username;
     
-    //@Value("${jdbc.password}")
+    @Value("${spring.groovy-api.datasource.password:}")
     private String password;
-    //@Value("${jdbc.password}")
-    private String api_config;
+    
+    @Value("${spring.groovy-api.api_config:api_config}")
+    private String apiconfig;
     
 
     /**
