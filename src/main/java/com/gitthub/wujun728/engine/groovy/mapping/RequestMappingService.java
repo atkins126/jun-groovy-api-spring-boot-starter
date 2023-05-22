@@ -57,7 +57,7 @@ public class RequestMappingService implements InitializingBean {
 			for (String path : getPatterns(info)) {
 
 				// 过滤本身的类
-				if (path.indexOf(apiProperties.getBasePath()) == 0 || path.equals("/error")) {
+				if (path.indexOf(apiProperties.getContext()) == 0 || path.equals("/error")) {
 					continue;
 				}
 
@@ -67,7 +67,7 @@ public class RequestMappingService implements InitializingBean {
 					apiInfo.setPath(path);
 					apiInfo.setMethod("All");
 					apiInfo.setScriptType("Code");
-					apiInfo.setBeanName(apiProperties.getServiceName());
+					apiInfo.setBeanName(apiProperties.getServicename());
 					apiInfo.setCreator("admin");
 					apiInfo.setDatasourceId("");
 					apiInfo.setScriptContent("");
@@ -79,7 +79,7 @@ public class RequestMappingService implements InitializingBean {
 						apiInfo.setPath(path);
 						apiInfo.setMethod(method.name());
 						apiInfo.setScriptType("Code");
-						apiInfo.setBeanName(apiProperties.getServiceName());
+						apiInfo.setBeanName(apiProperties.getServicename());
 						apiInfo.setCreator("admin");
 						apiInfo.setDatasourceId("");
 						apiInfo.setScriptContent("");

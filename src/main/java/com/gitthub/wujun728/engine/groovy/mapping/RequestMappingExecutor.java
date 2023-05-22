@@ -92,7 +92,7 @@ public class RequestMappingExecutor implements ApplicationListener<ContextRefres
 		String content = serverProperties.getServlet().getContextPath() == null ? ""
 				: serverProperties.getServlet().getContextPath();
 		Integer port = serverProperties.getPort() == null ? 8080 : serverProperties.getPort();
-		return "http://localhost:" + port + ("/" + content + apiProperties.getBasePath()).replace("//", "/");
+		return "http://localhost:" + port + ("/" + content + apiProperties.getContext()).replace("//", "/");
 	}
 
 	/**
