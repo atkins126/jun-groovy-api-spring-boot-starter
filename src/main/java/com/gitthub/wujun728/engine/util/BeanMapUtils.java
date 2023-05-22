@@ -37,18 +37,23 @@ public class BeanMapUtils {
     }
     
     @SuppressWarnings({ "unchecked", "rawtypes" })
-	public static <T> T columnsMapToBean(Map<String, Object> map, Class<T> clazz) throws Exception {
-    	T bean = clazz.newInstance();
-    	BeanMap beanMap = BeanMap.create(bean);
-    	Map m = new HashMap<>();
-    	map.forEach((k,v)->{
-    		if(v instanceof java.sql.Timestamp) {
-    			m.put(FieldUtils.columnNameToFieldName(String.valueOf(k)), dateToStr((java.sql.Timestamp)v));
-    		}else {
-    			m.put(FieldUtils.columnNameToFieldName(String.valueOf(k)), v);
-    		}
-		});
-    	beanMap.putAll(m);
+	public static <T> T columnsMapToBean(Map<String, Object> map, Class<T> clazz){
+    	T bean = null;
+		try {
+			bean = clazz.newInstance();
+			BeanMap beanMap = BeanMap.create(bean);
+			Map m = new HashMap<>();
+			map.forEach((k,v)->{
+				if(v instanceof java.sql.Timestamp) {
+					m.put(FieldUtils.columnNameToFieldName(String.valueOf(k)), dateToStr((java.sql.Timestamp)v));
+				}else {
+					m.put(FieldUtils.columnNameToFieldName(String.valueOf(k)), v);
+				}
+			});
+			beanMap.putAll(m);
+		} catch (InstantiationException | IllegalAccessException e) {
+			e.printStackTrace();
+		}
     	return bean;
     }
     

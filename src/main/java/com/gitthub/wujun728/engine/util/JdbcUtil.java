@@ -12,9 +12,11 @@ import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.springframework.boot.autoconfigure.batch.BatchProperties.Job;
+
 import com.alibaba.druid.pool.DruidPooledConnection;
-import com.alibaba.fastjson2.JSON;
-import com.alibaba.fastjson2.JSONObject;
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.gitthub.wujun728.engine.common.ApiDataSource;
 import com.gitthub.wujun728.engine.common.DataResult;
 import com.gitthub.wujun728.mybatis.sql.engine.DynamicSqlEngine;
@@ -173,6 +175,9 @@ public class JdbcUtil {
 					try {
 						Object value = rs.getObject(t);
 						jo.put(t, value);
+						if(value==null) {
+							jo.put(t, "");
+						}
 					} catch (SQLException throwables) {
 						throwables.printStackTrace();
 					}
@@ -182,7 +187,7 @@ public class JdbcUtil {
 			return list;
 		} else {
 			int updateCount = statement.getUpdateCount();
-			return updateCount + " rows affected";
+			return "["+updateCount + "] rows affected";
 		}
 
 	}

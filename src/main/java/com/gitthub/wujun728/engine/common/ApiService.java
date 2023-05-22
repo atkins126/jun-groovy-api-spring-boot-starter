@@ -83,7 +83,7 @@ public class ApiService {
 			datas.stream().map(item->{
 				List<ApiSql> sqlList = Lists.newArrayList();
 				if("sql".equalsIgnoreCase(item.getScriptType())) {
-					String sqls[] = item.getScriptContent().split(";");
+					String sqls[] = item.getScriptContent().split("##");
 					if(sqls.length>0) {
 						for(String sql : sqls) {
 							if(StringUtils.isEmpty(sql)) {
@@ -127,13 +127,7 @@ public class ApiService {
 		List datas = Lists.newArrayList();
 		if(!CollectionUtils.isEmpty(lists)) {
 			lists.forEach(item->{
-//				Map m = new HashMap<>();
-//				item.getColumns().forEach((k,v)->{
-//					m.put(FieldUtils.columnNameToFieldName(String.valueOf(k)), v);
-//				});
 				Object info = null;
-				//info = clazz.newInstance();
-				//info = JSONObject.parseObject(JSONObject.toJSONString(m), clazz);
 				try {
 					info = BeanMapUtils.columnsMapToBean(item.getColumns(), clazz);
 				} catch (Exception e) {
@@ -144,6 +138,15 @@ public class ApiService {
 			
 		}
 		return datas;
+	}
+	public Object convertRecord(Record record,Class clazz){
+		Object info = null;
+		try {
+			info = BeanMapUtils.columnsMapToBean(record.getColumns(), clazz);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return info;
 	}
 	
 	
@@ -179,7 +182,7 @@ public class ApiService {
 		ApiDataSource info = new ApiDataSource();
 		Record record= Db.use(configName).findById("api_datasource", id);
 		//List<ApiDataSource> lists = jdbcTemplate.query("select * from api_datasource ",new BeanPropertyRowMapper(ApiDataSource.class));
-		BeanUtils.copyProperties(record.getColumns(), info);
+		info = BeanMapUtils.columnsMapToBean(record.getColumns(), ApiDataSource.class);
 		return info;
 	}
 	
