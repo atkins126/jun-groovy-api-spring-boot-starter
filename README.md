@@ -113,9 +113,11 @@ c.g.w.e.g.core.bean.GroovyDynamicLoader  : 当前groovyInfo加载完成,classNam
 
 #### Java源码接口开发
 
-**Step1，在API_CONFIG表中新增一条类的解析，具体如下**
+**Step1，在API_CONFIG表中新增一条数据映射成下面的类的解析，SQLyog数据及类的源码展示，具体如下**
 
 ![img_2.png](doc/java1.png)
+
+![img_2.png](doc/java1-1.png)
 
 **Step2，在POSTMAN中通过PATH，调用这个类，并Java源码解析后执行结果集返回的数据**
 
