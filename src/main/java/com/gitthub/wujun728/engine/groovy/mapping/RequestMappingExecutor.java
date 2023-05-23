@@ -277,7 +277,12 @@ public class RequestMappingExecutor implements ApplicationListener<ContextRefres
 				System.err.println("this API only support content-type: " + apiConfig.getContentType()
 						+ ", but you use: " + contentType);
 			}
-		} else {
+		} 
+		// 如果multipart/form-data请求，先判断接口规定的content-type是不是确实是multipart/form-data
+		else if (contentType.equalsIgnoreCase(MediaType.MULTIPART_FORM_DATA_VALUE)) {
+			params = getSqlParam(request, apiConfig);
+		} 
+		else {
 			params = getSqlParam(request, apiConfig);
 			throw new RuntimeException("content-type not supported: " + contentType);
 		}
