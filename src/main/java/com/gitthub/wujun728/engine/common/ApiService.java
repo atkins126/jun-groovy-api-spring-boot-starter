@@ -83,7 +83,7 @@ public class ApiService {
 			datas.stream().map(item->{
 				List<ApiSql> sqlList = Lists.newArrayList();
 				if("sql".equalsIgnoreCase(item.getScriptType())) {
-					String sqls[] = item.getScriptContent().split("##");
+					String sqls[] = item.getScriptContent().split(";");
 					if(sqls.length>0) {
 						for(String sql : sqls) {
 							if(StringUtils.isEmpty(sql)) {

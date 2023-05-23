@@ -43,6 +43,8 @@ public class IdUtil {
             return "";
         }
     }
+    
+    
 
     /**
      * 生成带有”-“的UUID（15位）
