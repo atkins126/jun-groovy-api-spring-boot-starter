@@ -27,6 +27,7 @@ import com.jfinal.plugin.activerecord.Record;
 import com.jfinal.plugin.druid.DruidPlugin;
 
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.lang.Console;
 import cn.hutool.extra.spring.SpringUtil;
 //import cn.hutool.core.bean.BeanUtil;
 //import cn.hutool.core.bean.copier.CopyOptions;
@@ -50,6 +51,7 @@ public class ApiService {
 		String username = properties.getUsername();
 		String password = properties.getPassword();
 		if(StringUtils.isEmpty(url)) {
+			Console.log(SpringUtil.getProperty("spring.datasource.url"));
 			url = SpringUtil.getProperty("spring.datasource.url");
 			username = SpringUtil.getProperty("spring.datasource.username");
 			password = SpringUtil.getProperty("spring.datasource.password");
