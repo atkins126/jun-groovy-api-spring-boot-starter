@@ -133,12 +133,12 @@
 		    <artifactId>activerecord</artifactId>
 		    <version>5.0.4</version>
 		</dependency>
-                <!-- https://mvnrepository.com/artifact/com.baomidou/mybatis-plus -->
-        <!-- <dependency>
+		<!-- https://mvnrepository.com/artifact/com.baomidou/mybatis-plus -->
+		<dependency>
             <groupId>com.baomidou</groupId>
             <artifactId>mybatis-plus</artifactId>
             <version>3.4.0</version>
-        </dependency> -->
+        </dependency>
         
 	</dependencies>
 	
